@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.abc.system.mapper.RoleMapper">
+
+    <resultMap type="Role" id="RoleResult">
+        <result property="roleId"    column="role_id"    />
+        <result property="roleName"    column="role_name"    />
+        <result property="roleKey"    column="role_key"    />
+        <result property="userId"    column="user_id"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="status"    column="status"    />
+        <result property="ver"    column="ver"    />
+    </resultMap>
+
+    <sql id="selectRoleVo">
+        select role_id, role_name, role_key, user_id, create_time, update_time, status, ver from tb_role
+    </sql>
+
+    <select id="selectRoleKeysByUserId" resultType="java.lang.String">
+        select role_key from tb_role r
+        left join tb_user_role ur on ur.role_id = r.role_id
+        left join tb_user u on ur.user_id = u.user_id
+        where u.user_id = #{userId}
+    </select>
+
+</mapper>

@@ -1,0 +1,143 @@
+system:
+  name: EasyAdmin
+  whitelist:
+    - /system/login
+    - /system/register
+
+server:
+  port: ${server.port}
+spring:
+  profiles:
+    active: dev
+  application:
+    name: easyadmin
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+  datasource:
+    url: jdbc:mysql://${easyadmin.mysql.ip}:${easyadmin.mysql.port}/${easyadmin.mysql.db}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: ${easyadmin.mysql.username}
+    password: ${easyadmin.mysql.password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    druid:
+      initialSize: 5
+      minIdle: 5
+      maxActive: 20
+      maxWait: 600000
+      # 主要配置以上几个即可
+      timeBetweenEvictionRunsMillis: 600000
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: SELECT 1 FROM DUAL
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      poolPreparedStatements: true
+      #配置监控统计拦截的filters：stat:监控统计、self4j(使用log4j的记得导入log4j的依赖）：日志记录、wall：防御sql注入 此处配置不能遗漏服务sql监控台不能监控sql
+      filter:
+        slf4j:
+          enabled: true
+        stat:
+          enabled: true
+          merge-sql: true
+          slow-sql-millis: 5000
+        wall:
+          enabled: true
+      #配置stat-view-servlet
+      stat-view-servlet:
+        enabled: true
+        login-username: admin
+        login-password: admin
+        reset-enable: false
+      #配置web-stat-filter
+      web-stat-filter:
+        enabled: true
+  redis:
+    # Redis服务器地址
+    host: ${easyadmin.redis.host}
+    # Redis服务器端口号
+    port: ${easyadmin.redis.port}
+    # 使用的数据库索引，默认是0
+    database: ${easyadmin.redis.index}
+    # 连接超时时间
+    timeout: 1800000
+    # 设置密码
+    #password: ${easyadmin.redis.password}
+  mvc:
+    pathmatch:
+      # 解决swagger报错
+      matching-strategy: ANT_PATH_MATCHER
+  mail:
+    default-encoding: UTF-8
+    host: ${easyadmin.mail.host}
+    port: ${easyadmin.mail.port}
+    username: ${easyadmin.mail.username}
+    password: ${easyadmin.mail.password}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          ssl:
+            trust: ${easyadmin.mail.host}
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  rabbitmq:
+    host: ${easyadmin.rabbitmq.host}
+    port: ${easyadmin.rabbitmq.port}
+    username: ${easyadmin.rabbitmq.username}
+    password: ${easyadmin.rabbitmq.password}
+    listener:
+      simple:
+        concurrency: ${easyadmin.rabbitmq.concurrency} # 消费者数量
+        max-concurrency: ${easyadmin.rabbitmq.maxConcurrency} # 最大消费者数量
+        prefetch: ${easyadmin.rabbitmq.prefetch} # 消费者每次从队列获取的消息数量。写多了，如果长时间得不到消费，数据就一直得不到处理
+        acknowledge-mode: ${easyadmin.rabbitmq.ackMode} # 消费接收确认机制-手动确认
+        retry:
+          enabled: ${easyadmin.rabbitmq.retry.enable}
+          initial-interval: ${easyadmin.rabbitmq.retry.time} # 初始失败的时长等待
+          multiplier: ${easyadmin.rabbitmq.retry.multiplier} # 失败后下次等待时常的倍数
+          max-attempts: ${easyadmin.rabbitmq.retry.maxAttempts} # 最大重连次数
+          stateless: ${easyadmin.rabbitmq.retry.stateless} # true无状态，false有状态。如果业务包含事务，改为false
+
+mybatis-plus:
+  mapperLocations: classpath*:mapper/**/*Mapper.xml
+  typeAliasesPackage: com.abc.**.domain.entity
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
+
+wechat:
+  appid: wxed9954c01bb89b47
+  appSecret: a7482517235173ddb4083788de60b90e
+  redirectUri: http://localhost:8160/auth/wxLogin
+
+oss:
+  type: ${easyadmin.oss.type}
+  minio:
+    endpoint: ${easyadmin.oss.minio.endpoint}
+    bucketName: ${easyadmin.oss.minio.bucketName}
+    accessKey: ${easyadmin.oss.minio.accessKey}
+    secretKey: ${easyadmin.oss.minio.secretKey}
+  aliyun:
+    end-point: ${easyadmin.oss.aliyun.endpoint}
+    access-key-id: ${easyadmin.oss.aliyun.accessKey}
+    access-key-secret: ${easyadmin.oss.aliyun.secretKey}
+    bucket-name: ${easyadmin.oss.aliyun.bucketName}
+url:
+  front: ${easyadmin.url.front}
+  backend: ${easyadmin.url.backend}
+
+# token配置
+token:
+  # 令牌自定义标识
+  header: Authorization
+  # 令牌密钥
+  secret: abcdefghijklmnopqrstuvwxyz
+  # 令牌有效期（默认60分钟）
+  expireTime: 60
+  # 令牌刷新时间（默认10分钟）
+  refreshTime: 10
