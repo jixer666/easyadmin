@@ -1,4 +1,4 @@
-package com.abc.common.cache;
+package com.abc.common.core.cache;
 
 import java.util.List;
 import java.util.Map;

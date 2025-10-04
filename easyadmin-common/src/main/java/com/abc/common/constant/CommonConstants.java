@@ -188,7 +188,10 @@ public class CommonConstants {
      */
     public static final Integer ZERO = 0;
 
+    /**
+     * 用户信息默认值
+     */
     public static final String DEFAULT_NICKNAME = "用户" + RandomUtil.randomString(5);
-
     public static final String DEFAULT_AVATAR = "";
+
 }

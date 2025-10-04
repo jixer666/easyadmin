@@ -1,6 +1,7 @@
 package com.abc.system.domain.entity;
 
 import com.abc.common.domain.entity.BaseEntity;
+import com.abc.system.domain.enums.MenuTypeEnum;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
@@ -36,4 +37,17 @@ public class Menu extends BaseEntity {
 
     private Long userId;
 
+    private Integer hidden;
+
+    public boolean isMuLu() {
+        return menuType.equals(MenuTypeEnum.MU_LU.getType());
+    }
+
+    public boolean isCaiDan() {
+        return menuType.equals(MenuTypeEnum.CAI_DAN.getType());
+    }
+
+    public boolean isAnNiu() {
+        return menuType.equals(MenuTypeEnum.AN_NIU.getType());
+    }
 }

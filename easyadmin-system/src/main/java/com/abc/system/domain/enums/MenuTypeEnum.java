@@ -1,0 +1,16 @@
+package com.abc.system.domain.enums;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
+public enum MenuTypeEnum {
+    MU_LU(1, "目录"),
+    CAI_DAN(2, "菜单"),
+    AN_NIU(3, "按钮");
+
+    private Integer type;
+    private String desc;
+
+}

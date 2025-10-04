@@ -38,10 +38,9 @@ public class IndexController {
     @ApiOperation("获取菜单权限")
     @GetMapping("/routes")
     public ApiResult<List<MenuRouterVO>> getMenuRoutes() {
+        List<MenuRouterVO> routers = indexService.getMenuRoutes();
 
-
-
-        return ApiResult.success();
+        return ApiResult.success(routers);
     }
 
 }

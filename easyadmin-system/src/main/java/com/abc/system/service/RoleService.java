@@ -1,6 +1,9 @@
 package com.abc.system.service;
 
+import com.abc.common.domain.vo.PageResult;
+import com.abc.system.domain.dto.RoleDTO;
 import com.abc.system.domain.entity.Role;
+import com.abc.system.domain.vo.RoleMenuTreeVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -9,5 +12,13 @@ public interface RoleService extends IService<Role> {
 
     List<String> getRoleKeysByUserId(Long userId);
 
+    List<Long> getRoleIdsByUserId(Long userId);
 
+    PageResult getRolePageWithUiParam(RoleDTO roleDTO);
+
+    void updateRole(RoleDTO roleDTO);
+
+    void saveRole(RoleDTO roleDTO);
+
+    RoleMenuTreeVO getRoleMenuTree(Long roleId);
 }

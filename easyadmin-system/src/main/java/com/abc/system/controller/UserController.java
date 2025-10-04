@@ -29,7 +29,7 @@ public class UserController {
 
     @ApiOperation("查询用户分页")
     @GetMapping("/page")
-    public ApiResult<PageResult<UserVO>> getPage() {
+    public ApiResult<PageResult> getPage() {
 
         return ApiResult.success();
     }

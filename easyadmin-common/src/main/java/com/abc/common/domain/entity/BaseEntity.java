@@ -1,7 +1,7 @@
 package com.abc.common.domain.entity;
 
 import com.abc.common.constant.CommonConstants;
-import com.abc.common.enums.StatusEnum;
+import com.abc.common.domain.enums.StatusEnum;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 

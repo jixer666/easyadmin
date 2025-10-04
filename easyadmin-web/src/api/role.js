@@ -7,24 +7,25 @@ export function getRoutes() {
   })
 }
 
-export function getRoles() {
+export function getRolePage(data) {
   return request({
-    url: '/roles',
-    method: 'get'
+    url: '/system/role/page',
+    method: 'get',
+    params: data
   })
 }
 
 export function addRole(data) {
   return request({
-    url: '/role',
+    url: '/system/role',
     method: 'post',
     data
   })
 }
 
-export function updateRole(id, data) {
+export function updateRole(data) {
   return request({
-    url: `/role/${id}`,
+    url: `/system/role`,
     method: 'put',
     data
   })
@@ -34,5 +35,12 @@ export function deleteRole(id) {
   return request({
     url: `/role/${id}`,
     method: 'delete'
+  })
+}
+
+export function getRoleMenuTree(roleId) {
+  return request({
+    url: `/system/role/getRoleMenuTree/${roleId}`,
+    method: 'get'
   })
 }

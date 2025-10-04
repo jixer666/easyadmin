@@ -1,4 +1,4 @@
-package com.abc.common.cache;
+package com.abc.common.core.cache;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.abc.common.util.RedisUtils;

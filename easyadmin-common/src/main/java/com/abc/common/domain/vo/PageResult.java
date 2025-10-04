@@ -1,14 +1,16 @@
 package com.abc.common.domain.vo;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
-public class PageResult<T> {
+@Builder
+public class PageResult {
 
-    private List<T> list;
+    private List<?> list;
 
-    private Integer total;
+    private Long total;
 
 }

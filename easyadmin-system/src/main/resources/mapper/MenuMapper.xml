@@ -14,6 +14,7 @@
         <result property="orderNum"    column="order_num"    />
         <result property="perms"    column="perms"    />
         <result property="icon"    column="icon"    />
+        <result property="hidden"    column="hidden"   />
         <result property="userId"    column="user_id"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateTime"    column="update_time"    />
@@ -22,7 +23,24 @@
     </resultMap>
 
     <sql id="selectMenuVo">
-        select menu_id, parent_id, menu_name, path, component, menu_type, order_num, perms, icon, user_id, create_time, update_time, status, ver from tb_menu
+        select menu_id, parent_id, menu_name, path, component, menu_type, order_num, perms, icon, hidden, user_id, create_time, update_time, status, ver from tb_menu
     </sql>
+    <select id="selectMenusByUserId" resultMap="MenuResult">
+        select m.* from tb_menu m
+        left join tb_role_menu rm on rm.menu_id = m.menu_id
+        left join tb_role r on r.role_id = rm.role_id
+        left join tb_user_role ur on ur.role_id = r.role_id
+        <where>
+            <if test="userId != null">ur.user_id = #{userId}</if>
+        </where>
+    </select>
+    <select id="selectMenuIdsByRoleId" resultType="java.lang.Long">
+        select m.* from tb_menu m
+        left join tb_role_menu rm on rm.menu_id = m.menu_id
+        left join tb_role r on r.role_id = rm.role_id
+        <where>
+            <if test="roleId != null">r.role_id = #{roleId}</if>
+        </where>
+    </select>
 
 </mapper>
