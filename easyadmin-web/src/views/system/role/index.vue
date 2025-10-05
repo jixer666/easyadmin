@@ -27,8 +27,7 @@
         <el-table-column label="角色字符" align="center" key="roleKey" prop="roleKey" :show-overflow-tooltip="true" />
         <el-table-column label="状态" align="center" key="status" width="100">
           <template slot-scope="scope">
-            <el-tag v-if="scope.row.status === 1">正常</el-tag>
-            <el-tag v-else type="danger">禁用</el-tag>
+            <dict-tag :options="dict.type.common_status" :value="scope.row.status"/>
           </template>
         </el-table-column>
         <el-table-column label="创建时间" align="center" prop="createTime" width="160">
@@ -82,6 +81,11 @@
         <el-form-item label="角色字符" prop="roleKey">
           <el-input v-model="form.roleKey"></el-input>
         </el-form-item>
+        <el-form-item label="角色状态">
+          <el-radio-group v-model="form.status">
+            <el-radio :label="parseInt(item.value)" v-for="(item, index) in dict.type.common_status" :key="index">{{ item.label }}</el-radio>
+          </el-radio-group>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
@@ -119,10 +123,11 @@
 </template>
 
 <script>
-import {getRolePage, addRole, updateRole, getRoleMenuTree, addRoleMenu, deleteRole} from '@/api/role'
+import {getRolePage, addRole, updateRole, getRoleMenuTree, addRoleMenu, deleteRole} from '@/api/system/role'
 
 export default {
   name: 'Role',
+  dicts: ['common_status'],
   data() {
     return {
       searchForm: {
@@ -213,7 +218,6 @@ export default {
         this.loading = false;
         this.getList();
       }).catch((error) => {
-        console.log(error)
         this.loading = false;
       });
     },

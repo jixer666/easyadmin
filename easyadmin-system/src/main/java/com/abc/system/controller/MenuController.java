@@ -4,11 +4,12 @@ import com.abc.common.domain.vo.ApiResult;
 import com.abc.common.domain.vo.PageResult;
 import com.abc.system.domain.dto.MenuDTO;
 import com.abc.system.service.MenuService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-
+@Api(tags = "菜单接口")
 @RestController
 @RequestMapping("/system/menu")
 public class MenuController {

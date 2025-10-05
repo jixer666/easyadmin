@@ -1,5 +1,5 @@
 import router, { dynamicRoutes, constantRoutes } from '@/router'
-import {getRoutes} from "@/api/role";
+import {getRoutes} from "@/api/system/role";
 import Layout from '@/layout/index'
 
 /**

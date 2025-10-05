@@ -32,8 +32,7 @@
         </el-table-column>
         <el-table-column label="状态" align="center" key="status" width="100">
           <template slot-scope="scope">
-            <el-tag v-if="scope.row.status === 1">正常</el-tag>
-            <el-tag v-else type="danger">禁用</el-tag>
+            <dict-tag :options="dict.type.common_status" :value="scope.row.status"/>
           </template>
         </el-table-column>
         <el-table-column label="创建时间" align="center" prop="createTime" width="160">
@@ -87,6 +86,11 @@
         <el-form-item label="用户头像">
           <el-input v-model="form.avatar"></el-input>
         </el-form-item>
+        <el-form-item label="用户状态">
+          <el-radio-group v-model="form.status">
+            <el-radio :label="parseInt(item.value)" v-for="(item, index) in dict.type.common_status" :key="index">{{ item.label }}</el-radio>
+          </el-radio-group>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
@@ -119,10 +123,11 @@
 </template>
 
 <script>
-import {getUserPage, addUser, updateUser, deleteUser, getUserRole, saveUserRole} from '@/api/user'
+import {getUserPage, addUser, updateUser, deleteUser, getUserRole, saveUserRole} from '@/api/system/user'
 
 export default {
   name: 'User',
+  dicts: ['common_status'],
   data() {
     return {
       searchForm: {

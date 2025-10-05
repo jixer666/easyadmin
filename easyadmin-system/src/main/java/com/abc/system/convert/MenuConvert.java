@@ -70,7 +70,6 @@ public class MenuConvert {
 
     public static Menu buildDefaultMenuByMenuDTO(MenuDTO menuDTO) {
         Menu menu = BeanUtil.copyProperties(menuDTO, Menu.class);
-        menu.setCommonParams();
         menu.setMenuId(IdUtils.getId());
         menu.setUserId(SecurityUtils.getUserId());
         if (Objects.isNull(menu.getParentId())) {
@@ -79,6 +78,7 @@ public class MenuConvert {
         if (Objects.isNull(menu.getHidden())) {
             menu.setHidden(CommonConstants.YES);
         }
+        menu.setCommonParams();
 
         return menu;
     }

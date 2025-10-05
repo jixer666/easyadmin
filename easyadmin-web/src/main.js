@@ -22,6 +22,8 @@ import * as filters from './filters' // global filters
 import plugins from './plugins' // plugins
 
 import Pagination from "@/components/Pagination";
+import DictData from '@/components/DictData';
+import DictTag from '@/components/DictTag';
 
 
 /**
@@ -44,7 +46,9 @@ Vue.use(Element, {
 Vue.use(plugins)
 
 Vue.component('Pagination', Pagination)
+Vue.component('DictTag', DictTag)
 
+DictData.install()
 
 // register global utility filters
 Object.keys(filters).forEach(key => {

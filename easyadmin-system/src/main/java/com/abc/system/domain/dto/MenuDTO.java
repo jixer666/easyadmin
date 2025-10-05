@@ -41,7 +41,6 @@ public class MenuDTO {
         AssertUtils.isNotEmpty(this, "菜单参数不能为空");
         AssertUtils.isNotEmpty(menuName, "菜单名称不能为空");
         AssertUtils.isNotEmpty(path, "路由路径不能为空");
-        AssertUtils.isNotEmpty(component, "组件路径不能为空");
         AssertUtils.isNotEmpty(menuType, "菜单类型不能为空");
         AssertUtils.isNotEmpty(orderNum, "顺序不能为空");
     }

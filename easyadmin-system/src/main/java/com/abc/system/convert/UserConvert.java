@@ -2,6 +2,7 @@ package com.abc.system.convert;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.abc.common.constant.CommonConstants;
+import com.abc.common.util.IdUtils;
 import com.abc.system.domain.dto.RegisterDTO;
 import com.abc.common.domain.entity.User;
 import com.abc.system.domain.vo.RoleVO;
@@ -20,7 +21,9 @@ public class UserConvert {
                 .nickname(CommonConstants.DEFAULT_NICKNAME)
                 .avatar(CommonConstants.DEFAULT_AVATAR)
                 .build();
+        user.setUserId(IdUtils.getId());
         user.setCommonParams();
+
         return user;
     }
 

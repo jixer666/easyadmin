@@ -5,11 +5,12 @@ import com.abc.common.domain.vo.PageResult;
 import com.abc.system.domain.dto.RoleDTO;
 import com.abc.system.domain.vo.RoleMenuTreeVO;
 import com.abc.system.service.RoleService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-
+@Api(tags = "角色接口")
 @RestController
 @RequestMapping("/system/role")
 public class RoleController {

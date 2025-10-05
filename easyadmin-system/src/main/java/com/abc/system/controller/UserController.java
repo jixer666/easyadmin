@@ -7,10 +7,12 @@ import com.abc.system.domain.dto.UserDTO;
 import com.abc.system.domain.vo.UserRoleVO;
 import com.abc.system.domain.vo.UserVO;
 import com.abc.system.service.UserService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+@Api(tags = "用户接口")
 @RestController
 @RequestMapping("/system/user")
 public class UserController {

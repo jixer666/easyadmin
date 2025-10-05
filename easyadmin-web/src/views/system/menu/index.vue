@@ -33,8 +33,7 @@
         <el-table-column label="组件路径" align="center" key="component" prop="component" :show-overflow-tooltip="true" />
         <el-table-column label="状态" align="center" key="status">
           <template slot-scope="scope">
-            <el-tag v-if="scope.row.status === 1">正常</el-tag>
-            <el-tag v-else type="danger">禁用</el-tag>
+            <dict-tag :options="dict.type.common_status" :value="scope.row.status"/>
           </template>
         </el-table-column>
         <el-table-column label="创建时间" align="center" prop="createTime" width="160">
@@ -143,16 +142,14 @@
           <el-col :span="11">
             <el-form-item label="显示状态">
               <el-radio-group v-model="menuForm.hidden">
-                <el-radio :label="1">显示</el-radio>
-                <el-radio :label="2">隐藏</el-radio>
+                <el-radio :label="parseInt(item.value)" v-for="(item, index) in dict.type.system_menu_hidden" :key="index">{{ item.label }}</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="菜单状态">
               <el-radio-group v-model="menuForm.status">
-                <el-radio :label="1">正常</el-radio>
-                <el-radio :label="2">禁用</el-radio>
+                <el-radio :label="parseInt(item.value)" v-for="(item, index) in dict.type.common_status" :key="index">{{ item.label }}</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -167,12 +164,12 @@
 </template>
 
 <script>
-import {getMenuPage, addMenu, updateMenu, deleteMenu} from "@/api/menu";
+import {getMenuPage, addMenu, updateMenu, deleteMenu} from "@/api/system/menu";
 import IconSelect from "@/components/IconSelect";
-import {deleteRole} from "@/api/role";
 
 export default {
   name: 'Menu',
+  dicts: ['common_status', 'system_menu_hidden'],
   components: {
     IconSelect
   },
