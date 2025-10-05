@@ -1,9 +1,10 @@
 package com.abc.system.domain.dto;
 
+import cn.hutool.core.collection.CollUtil;
 import com.abc.common.util.AssertUtils;
 import lombok.Data;
 
-import java.util.Date;
+import java.util.List;
 
 @Data
 public class MenuDTO {
@@ -28,6 +29,9 @@ public class MenuDTO {
 
     private Integer status;
 
+    // 用于删除菜单
+    private List<Long> menuIds;
+
     public void checkUpdateParams() {
         AssertUtils.isNotEmpty(this, "菜单参数不能为空");
         AssertUtils.isNotEmpty(menuId, "菜单ID不能为空");
@@ -40,5 +44,11 @@ public class MenuDTO {
         AssertUtils.isNotEmpty(component, "组件路径不能为空");
         AssertUtils.isNotEmpty(menuType, "菜单类型不能为空");
         AssertUtils.isNotEmpty(orderNum, "顺序不能为空");
+    }
+
+    public void checkDeleteParams() {
+        AssertUtils.isNotEmpty(this, "菜单参数不能为空");
+        AssertUtils.isTrue(CollUtil.isNotEmpty(menuIds), "菜单ID列表不能为空");
+
     }
 }

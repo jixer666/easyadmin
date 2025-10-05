@@ -3,6 +3,7 @@ package com.abc.system.controller;
 import com.abc.common.domain.vo.ApiResult;
 import com.abc.common.domain.vo.PageResult;
 import com.abc.common.util.SecurityUtils;
+import com.abc.system.domain.dto.UserDTO;
 import com.abc.system.domain.vo.UserVO;
 import com.abc.system.service.UserService;
 import io.swagger.annotations.ApiOperation;
@@ -29,9 +30,10 @@ public class UserController {
 
     @ApiOperation("查询用户分页")
     @GetMapping("/page")
-    public ApiResult<PageResult> getPage() {
+    public ApiResult<PageResult> getUserPage(UserDTO userDTO) {
+        PageResult pageResult = userService.getUserPageWithUiParam(userDTO);
 
-        return ApiResult.success();
+        return ApiResult.success(pageResult);
     }
 
 

@@ -49,5 +49,19 @@ public class RoleController {
         return ApiResult.success(roleMenuTreeVO);
     }
 
+    @ApiOperation("分配菜单权限")
+    @PostMapping("/saveRoleMenu")
+    public ApiResult<Void> saveRoleMenu(@RequestBody RoleDTO roleDTO) {
+        roleService.saveRoleMenu(roleDTO);
 
+        return ApiResult.success();
+    }
+
+    @ApiOperation("删除角色")
+    @DeleteMapping
+    public ApiResult<Void> deleteRole(@RequestBody RoleDTO roleDTO) {
+        roleService.deleteRole(roleDTO);
+
+        return ApiResult.success();
+    }
 }

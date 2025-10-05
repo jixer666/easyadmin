@@ -4,6 +4,7 @@ import com.abc.system.domain.dto.RoleDTO;
 import com.abc.system.domain.entity.Role;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -14,4 +15,10 @@ public interface RoleMapper extends BaseMapper<Role> {
     List<Long> selectRoleIdsByUserId(Long userId);
 
     List<Role> selectRoleList(RoleDTO roleDTO);
+
+    void deleteRoleMenuByRoleId(Long roleId);
+
+    void saveRoleMenu(@Param("roleId") Long roleId, @Param("list") List<Long> menuIds);
+
+    List<Long> selectRoleIdsByMenuId(Long menuId);
 }

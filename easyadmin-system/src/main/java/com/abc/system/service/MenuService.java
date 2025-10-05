@@ -18,4 +18,6 @@ public interface MenuService extends IService<Menu> {
     void saveMenu(MenuDTO menuDTO);
 
     List<Long> getMenuIdsByRoleId(Long roleId);
+
+    void deleteMenu(MenuDTO menuDTO);
 }

@@ -40,5 +40,13 @@ public class MenuController {
         return ApiResult.success();
     }
 
+    @ApiOperation("删除菜单")
+    @DeleteMapping
+    public ApiResult<Void> deleteMenu(@RequestBody MenuDTO menuDTO) {
+        menuService.deleteMenu(menuDTO);
+
+        return ApiResult.success();
+    }
+
 
 }

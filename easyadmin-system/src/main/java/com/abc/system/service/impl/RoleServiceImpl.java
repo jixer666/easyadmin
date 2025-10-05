@@ -1,15 +1,15 @@
 package com.abc.system.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.abc.common.core.service.BaseServiceImpl;
 import com.abc.common.domain.vo.PageResult;
+import com.abc.common.exception.GlobalException;
 import com.abc.common.util.AssertUtils;
-import com.abc.common.util.SecurityUtils;
 import com.abc.system.convert.RoleConvert;
 import com.abc.system.domain.dto.RoleDTO;
 import com.abc.system.domain.entity.Role;
-import com.abc.system.domain.vo.MenuVO;
 import com.abc.system.domain.vo.RoleMenuTreeVO;
 import com.abc.system.domain.vo.RoleVO;
 import com.abc.system.mapper.RoleMapper;
@@ -18,6 +18,7 @@ import com.abc.system.service.RoleService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -74,7 +75,55 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, Role> implement
     @Override
     public List<Long> getRoleIdsByUserId(Long userId) {
         AssertUtils.isNotEmpty(userId, "用户ID不能为空");
+
         return roleMapper.selectRoleIdsByUserId(userId);
     }
 
+    @Override
+    @Transactional
+    public void saveRoleMenu(RoleDTO roleDTO) {
+        roleDTO.checkSaveRoleMenuParams();
+        deleteRoleAllMenuByRoleId(roleDTO.getRoleId());
+        saveRoleMenu(roleDTO.getRoleId(), roleDTO.getMenuIds());
+    }
+
+    private void saveRoleMenu(Long roleId, List<Long> menuIds) {
+        AssertUtils.isNotEmpty(roleId, "角色ID不能为空");
+        if (CollUtil.isEmpty(menuIds)) {
+            return;
+        }
+
+        roleMapper.saveRoleMenu(roleId, menuIds);
+    }
+
+    private void deleteRoleAllMenuByRoleId(Long roleId) {
+        AssertUtils.isNotEmpty(roleId, "角色ID不能为空");
+
+        roleMapper.deleteRoleMenuByRoleId(roleId);
+    }
+
+    @Override
+    public void deleteRole(RoleDTO roleDTO) {
+        roleDTO.checkDeleteParams();
+        checkIsRoleContainMenu(roleDTO.getRoleIds());
+
+        roleMapper.deleteBatchIds(roleDTO.getRoleIds());
+    }
+
+    private void checkIsRoleContainMenu(List<Long> roleIds) {
+        MenuService menuService = SpringUtil.getBean(MenuService.class);
+        for (Long roleId : roleIds) {
+            List<Long> menuIds = menuService.getMenuIdsByRoleId(roleId);
+            if (CollUtil.isNotEmpty(menuIds)) {
+                throw new GlobalException(String.format("角色【%s】存在菜单权限，无法删除", getById(roleId).getRoleName()));
+            }
+        }
+    }
+
+    @Override
+    public List<Long> getRoleIdsByMenuId(Long menuId) {
+        AssertUtils.isNotEmpty(menuId, "菜单ID不能为空");
+
+        return roleMapper.selectRoleIdsByMenuId(menuId);
+    }
 }

@@ -7,12 +7,22 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="getList" size="medium">搜索</el-button>
-          <el-button @click="onSubmit" size="medium">重置</el-button>
+          <el-button @click="form = {}" size="medium">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
+    <div class="btn-div">
+      <div>
+        <el-button plain size="mini" type="primary" @click="handleAdd">新增</el-button>
+        <el-button plain size="mini" type="danger" @click="handleDelete(multipleSelectionIds)" :disabled="multipleSelectionIds.length === 0">批量删除</el-button>
+      </div>
+      <div>
+
+      </div>
+    </div>
     <div>
       <el-table v-loading="loading" :data="tableList" row-key="menuId">
+        <el-table-column type="selection" width="50" align="center" />
         <el-table-column label="菜单名称" align="center" key="menuName" prop="menuName" :show-overflow-tooltip="true" />
         <el-table-column prop="icon" label="图标" align="center" width="100" :show-overflow-tooltip="true">
           <template slot-scope="scope">
@@ -54,7 +64,7 @@
               size="mini"
               type="text"
               icon="el-icon-delete"
-              @click="handleDelete(scope.row)"
+              @click="handleDelete([scope.row.menuId])"
             >删除</el-button>
           </template>
         </el-table-column>
@@ -157,7 +167,7 @@
 </template>
 
 <script>
-import {getMenuPage, addMenu, updateMenu} from "@/api/menu";
+import {getMenuPage, addMenu, updateMenu, deleteMenu} from "@/api/menu";
 import IconSelect from "@/components/IconSelect";
 
 export default {
@@ -182,7 +192,7 @@ export default {
         icon: ''
       },
       cascaderTreeList: [],
-
+      multipleSelectionIds: []
     }
   },
   mounted() {
@@ -253,6 +263,22 @@ export default {
     selected(name) {
       this.menuForm.icon = name;
     },
+    handleDelete(ids) {
+      if (ids === null || ids.length === 0) {
+        this.$modal.msgWarning("未选中角色列表");
+        return;
+      }
+      this.loading = true;
+      deleteMenu({
+        menuIds: ids
+      }).then(res => {
+        this.$modal.msgSuccess("操作成功");
+        this.loading = false;
+        this.getList();
+      }).catch(error => {
+        this.loading = false;
+      })
+    }
   }
 }
 </script>
@@ -260,5 +286,11 @@ export default {
 <style lang="scss" scoped>
 .menu-container {
   padding: 20px;
+}
+
+.btn-div {
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
 }
 </style>

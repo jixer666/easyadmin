@@ -42,5 +42,9 @@
             <if test="roleId != null">r.role_id = #{roleId}</if>
         </where>
     </select>
+    <select id="selectMenusByParentId" resultMap="MenuResult">
+        <include refid="selectMenuVo"/>
+        where parent_id = #{menuId}
+    </select>
 
 </mapper>

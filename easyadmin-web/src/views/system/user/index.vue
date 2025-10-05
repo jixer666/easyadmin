@@ -1,32 +1,36 @@
 <template>
   <div class="user-container">
     <div>
-      <el-form :inline="true" :model="form" class="demo-form-inline">
-        <el-form-item label="角色名称">
-          <el-input v-model="form.userName" placeholder="请输入角色名称"></el-input>
+      <el-form :inline="true" :model="searchForm" class="demo-form-inline">
+        <el-form-item label="用户名称">
+          <el-input v-model="searchForm.userName" placeholder="请输入用户名称"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit" size="medium">搜索</el-button>
-          <el-button @click="onSubmit" size="medium">重置</el-button>
+          <el-button type="primary" @click="getList" size="medium">搜索</el-button>
+          <el-button @click="searchForm = {}" size="medium">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
     <div class="btn-div">
       <div>
         <el-button plain size="mini" type="primary" @click="handleAdd">新增</el-button>
-        <el-button plain size="mini" type="danger">删除</el-button>
-        <el-button plain size="mini" >导出</el-button>
+        <el-button plain size="mini" type="danger" @click="handleDelete(multipleSelectionIds)" :disabled="multipleSelectionIds.length === 0">批量删除</el-button>
       </div>
       <div>
 
       </div>
     </div>
     <div>
-      <el-table v-loading="loading" :data="tableList">
+      <el-table v-loading="loading" :data="tableList" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="50" align="center" />
-        <el-table-column label="角色名称" align="center" key="userName" prop="userName" :show-overflow-tooltip="true" />
-        <el-table-column label="角色字符" align="center" key="userKey" prop="userKey" :show-overflow-tooltip="true" />
-        <el-table-column label="状态" align="center" key="status">
+        <el-table-column label="账号" align="center" key="username" prop="username" :show-overflow-tooltip="true" />
+        <el-table-column label="昵称" align="center" key="nickname" prop="nickname" :show-overflow-tooltip="true" />
+        <el-table-column label="头像" align="center" key="avatar" prop="avatar" :show-overflow-tooltip="true" width="100">
+          <template slot-scope="scope">
+            <el-avatar size="40" :src="scope.row.avatar"></el-avatar>
+          </template>
+        </el-table-column>
+        <el-table-column label="状态" align="center" key="status" width="100">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.status === 1">正常</el-tag>
             <el-tag v-else type="danger">禁用</el-tag>
@@ -39,7 +43,7 @@
         <el-table-column
           label="操作"
           align="center"
-          width="160"
+          width="250"
         >
           <template slot-scope="scope">
             <el-button
@@ -52,23 +56,30 @@
               size="mini"
               type="text"
               icon="el-icon-delete"
-              @click="handleDelete(scope.row)"
+              @click="handleDelete([scope.row.userId])"
             >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
+    <pagination
+      v-show="searchForm.total > 0"
+      :total="searchForm.total"
+      :page.sync="searchForm.pageNum"
+      :limit.sync="searchForm.pageSize"
+      @pagination="getList"
+    />
     <el-dialog
       :title="dialogTitle"
       :visible.sync="dialogVisible"
       width="30%"
       :before-close="handleClose">
-      <el-form ref="form" :model="form" label-width="80px">
-        <el-form-item label="角色名称">
-          <el-input v-model="form.userName"></el-input>
+      <el-form ref="form" :model="form" label-width="80px" :rules="rules">
+        <el-form-item label="用户昵称" prop="nickname">
+          <el-input v-model="form.nickname"></el-input>
         </el-form-item>
-        <el-form-item label="角色字符">
-          <el-input v-model="form.userKey"></el-input>
+        <el-form-item label="用户头像">
+          <el-input v-model="form.avatar"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -80,10 +91,10 @@
 </template>
 
 <script>
-import { getuserPage, adduser, updateuser } from '@/api/user'
+import {getUserPage, addUser, updateUser, deleteUser} from '@/api/user'
 
 export default {
-  name: 'user',
+  name: 'User',
   data() {
     return {
       searchForm: {
@@ -97,7 +108,12 @@ export default {
       submitLoading: false,
       dialogVisible: false,
       dialogTitle: null,
-
+      rules: {
+        nickname: [
+          { required: true, message: "用户昵称不能为空", trigger: "blur" }
+        ],
+      },
+      multipleSelectionIds: []
     }
   },
   mounted() {
@@ -106,7 +122,7 @@ export default {
   methods: {
     getList() {
       this.loading = true;
-      getuserPage(this.searchForm).then(res => {
+      getUserPage(this.searchForm).then(res => {
         this.tableList = res.data.list;
         this.searchForm.total = parseInt(res.data.total);
         this.loading = false;
@@ -119,14 +135,14 @@ export default {
         if (valid) {
           this.submitLoading = true;
           if (this.form.userId != undefined) {
-            updateuser(this.form).then(response => {
+            updateUser(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.submitLoading = false;
               this.dialogVisible = false;
               this.getList();
             });
           } else {
-            adduser(this.form).then(response => {
+            addUser(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.submitLoading = false;
               this.dialogVisible = false;
@@ -138,19 +154,39 @@ export default {
     },
     handleUpdate(item) {
       this.form = item;
-      this.dialogTitle = "修改角色";
+      this.dialogTitle = "修改用户";
       this.dialogVisible = true;
     },
-    handleDelete(item) {
+    handleDelete(ids) {
+      if (ids === null || ids.length === 0) {
+        this.$modal.msgWarning("未选中用户列表");
+        return;
+      }
+      this.loading = true;
+      deleteUser({
+        userIds: ids
+      }).then(res => {
+        this.$modal.msgSuccess("操作成功");
+        this.loading = false;
+        this.getList();
+      }).catch(error => {
+        this.loading = false;
+      })
     },
     handleAdd() {
-      this.dialogTitle = "新增角色";
+      this.dialogTitle = "新增用户";
       this.dialogVisible = true;
     },
     handleClose() {
-      this.form = {};
+      this.form = {
+        menuCheckStrictly: true,
+      };
       this.dialogVisible = false;
+      this.dialogMenuVisible = false;
     },
+    handleSelectionChange(val) {
+      this.multipleSelectionIds = val.map(item => item.userId);
+    }
   }
 }
 </script>
@@ -165,4 +201,12 @@ export default {
   justify-content: space-between;
   align-content: center;
 }
+
+.tree-border {
+  margin-top: 5px;
+  border: 1px solid #e5e6e7;
+  background: #FFFFFF none;
+  border-radius: 4px;
+}
+
 </style>

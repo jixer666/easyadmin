@@ -19,6 +19,13 @@
     <sql id="selectUserVo">
         select user_id, username, password, avatar, nickname, create_time, update_time, status, ver from tb_user
     </sql>
+    <select id="selectUserList" resultMap="UserResult">
+        <include refid="selectUserVo" />
+        <where>
+            <if test="nickname != null and nickname != ''">and nickname like concat('%', #{nickname}, '%')</if>
+            <if test="username != null and username != ''">and username = #{nickname}</if>
+        </where>
+    </select>
 
 
 </mapper>

@@ -1,21 +1,24 @@
 package com.abc.system.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
+import com.abc.common.core.service.BaseServiceImpl;
+import com.abc.common.domain.vo.PageResult;
 import com.abc.common.util.AssertUtils;
 import com.abc.common.domain.entity.User;
 import com.abc.system.convert.UserConvert;
+import com.abc.system.domain.dto.UserDTO;
 import com.abc.system.domain.vo.UserVO;
 import com.abc.system.mapper.UserMapper;
 import com.abc.system.service.RoleService;
 import com.abc.system.service.UserService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
+public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implements UserService {
 
     @Autowired
     private UserMapper userMapper;
@@ -48,5 +51,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         List<String> roleKeys = roleService.getRoleKeysByUserId(userId);
 
         return UserConvert.convertToUserVO(user, roleKeys);
+    }
+
+    @Override
+    public PageResult getUserPageWithUiParam(UserDTO userDTO) {
+        startPage();
+        List<User> users = userMapper.selectUserList(userDTO);
+        List<UserVO> userVOList =pageList2CustomList(users, (List<User> list) -> {
+            return BeanUtil.copyToList(list, UserVO.class);
+        });
+
+        return buildPageResult(userVOList);
     }
 }

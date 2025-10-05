@@ -6,23 +6,22 @@
           <el-input v-model="searchForm.roleName" placeholder="请输入角色名称"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit" size="medium">搜索</el-button>
-          <el-button @click="onSubmit" size="medium">重置</el-button>
+          <el-button type="primary" @click="getList" size="medium">搜索</el-button>
+          <el-button @click="searchForm = {}" size="medium">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
     <div class="btn-div">
      <div>
        <el-button plain size="mini" type="primary" @click="handleAdd">新增</el-button>
-       <el-button plain size="mini" type="danger">删除</el-button>
-       <el-button plain size="mini" >导出</el-button>
+       <el-button plain size="mini" type="danger" @click="handleDelete(multipleSelectionIds)" :disabled="multipleSelectionIds.length === 0">批量删除</el-button>
      </div>
       <div>
 
       </div>
     </div>
     <div>
-      <el-table v-loading="loading" :data="tableList">
+      <el-table v-loading="loading" :data="tableList" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="50" align="center" />
         <el-table-column label="角色名称" align="center" key="roleName" prop="roleName" :show-overflow-tooltip="true" />
         <el-table-column label="角色字符" align="center" key="roleKey" prop="roleKey" :show-overflow-tooltip="true" />
@@ -52,7 +51,7 @@
               size="mini"
               type="text"
               icon="el-icon-delete"
-              @click="handleDelete(scope.row)"
+              @click="handleDelete([scope.row.roleId])"
             >删除</el-button>
             <el-button
               size="mini"
@@ -64,16 +63,23 @@
         </el-table-column>
       </el-table>
     </div>
+    <pagination
+      v-show="searchForm.total > 0"
+      :total="searchForm.total"
+      :page.sync="searchForm.pageNum"
+      :limit.sync="searchForm.pageSize"
+      @pagination="getList"
+    />
     <el-dialog
       :title="dialogTitle"
       :visible.sync="dialogVisible"
       width="30%"
       :before-close="handleClose">
       <el-form ref="form" :model="form" label-width="80px" :rules="rules">
-        <el-form-item label="角色名称">
+        <el-form-item label="角色名称" prop="roleName">
           <el-input v-model="form.roleName"></el-input>
         </el-form-item>
-        <el-form-item label="角色字符">
+        <el-form-item label="角色字符" prop="roleKey">
           <el-input v-model="form.roleKey"></el-input>
         </el-form-item>
       </el-form>
@@ -106,14 +112,14 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogMenuVisible = false">取 消</el-button>
-        <el-button type="primary" @click="onSubmit" :loading="submitLoading">确 定</el-button>
+        <el-button type="primary" @click="onSubmitRoleMenu" :loading="submitLoading">确 定</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import {getRolePage, addRole, updateRole, getRoleMenuTree} from '@/api/role'
+import {getRolePage, addRole, updateRole, getRoleMenuTree, addRoleMenu, deleteRole} from '@/api/role'
 
 export default {
   name: 'Role',
@@ -148,6 +154,7 @@ export default {
       menuExpand: false,
       menuNodeAll: false,
       menuOptions: [],
+      multipleSelectionIds: []
     }
   },
   mounted() {
@@ -191,7 +198,21 @@ export default {
       this.dialogTitle = "修改角色";
       this.dialogVisible = true;
     },
-    handleDelete(item) {
+    handleDelete(ids) {
+      if (ids === null || ids.length === 0) {
+        this.$modal.msgWarning("未选中角色列表");
+        return;
+      }
+      this.loading = true;
+      deleteRole({
+        roleIds: ids
+      }).then(res => {
+        this.$modal.msgSuccess("操作成功");
+        this.loading = false;
+        this.getList();
+      }).catch(error => {
+        this.loading = false;
+      })
     },
     handleAdd() {
       this.dialogTitle = "新增角色";
@@ -206,6 +227,7 @@ export default {
     },
     handleMenus(item) {
       this.dialogTitle = "分配菜单权限";
+      this.form.roleId = item.roleId;
       getRoleMenuTree(item.roleId).then(res => {
         this.menuOptions = res.data.menus;
         res.data.checkMenuIds.forEach((v) => {
@@ -246,6 +268,28 @@ export default {
         this.form.deptCheckStrictly = value ? true: false;
       }
     },
+    getMenuAllCheckedKeys() {
+      // 目前被选中的菜单节点
+      let checkedKeys = this.$refs.menu.getCheckedKeys();
+      // 半选中的菜单节点
+      let halfCheckedKeys = this.$refs.menu.getHalfCheckedKeys();
+      checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
+      return checkedKeys;
+    },
+    onSubmitRoleMenu() {
+      this.form.menuIds = this.getMenuAllCheckedKeys();
+      this.submitLoading = true;
+      addRoleMenu(this.form).then(res => {
+        this.$modal.msgSuccess("操作成功");
+        this.dialogMenuVisible = false;
+        this.submitLoading = false;
+      }).catch(error => {
+        this.submitLoading = false;
+      })
+    },
+    handleSelectionChange(val) {
+      this.multipleSelectionIds = val.map(item => item.roleId);
+    }
   }
 }
 </script>

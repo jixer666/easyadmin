@@ -23,3 +23,12 @@ export function addMenu(data) {
     data: data
   })
 }
+
+
+export function deleteMenu(data) {
+  return request({
+    url: '/system/menu',
+    method: 'delete',
+    data: data
+  })
+}

@@ -1,8 +1,11 @@
 package com.abc.system.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import com.abc.common.constant.MenuConstants;
 import com.abc.common.core.service.BaseServiceImpl;
 import com.abc.common.domain.vo.PageResult;
+import com.abc.common.exception.GlobalException;
 import com.abc.common.util.AssertUtils;
 import com.abc.system.convert.MenuConvert;
 import com.abc.system.domain.dto.MenuDTO;
@@ -10,12 +13,12 @@ import com.abc.system.domain.entity.Menu;
 import com.abc.system.domain.vo.MenuVO;
 import com.abc.system.mapper.MenuMapper;
 import com.abc.system.service.MenuService;
+import com.abc.system.service.RoleService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -81,5 +84,39 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, Menu> implement
         AssertUtils.isNotEmpty(roleId, "角色ID不存在");
 
         return menuMapper.selectMenuIdsByRoleId(roleId);
+    }
+
+    @Override
+    public void deleteMenu(MenuDTO menuDTO) {
+        menuDTO.checkDeleteParams();
+        checkIsMenuContainChildren(menuDTO.getMenuIds());
+        checkIsRoleContainMenu(menuDTO.getMenuIds());
+
+        menuMapper.deleteBatchIds(menuDTO.getMenuIds());
+    }
+
+    private void checkIsRoleContainMenu(List<Long> menuIds) {
+        RoleService roleService = SpringUtil.getBean(RoleService.class);
+        for (Long menuId : menuIds) {
+            List<Long> roleIds = roleService.getRoleIdsByMenuId(menuId);
+            if (CollUtil.isNotEmpty(roleIds)) {
+                throw new GlobalException(String.format("菜单【%s】已被角色分配，无法删除", getById(menuId).getMenuName()));
+            }
+        }
+    }
+
+    private void checkIsMenuContainChildren(List<Long> menuIds) {
+        for (Long menuId : menuIds) {
+            List<Menu> children = getMenusByParentId(menuId);
+            if (CollUtil.isNotEmpty(children)) {
+                throw new GlobalException(String.format("菜单【%s】存在子菜单权限，无法删除", getById(menuId).getMenuName()));
+            }
+        }
+    }
+
+    private List<Menu> getMenusByParentId(Long menuId) {
+        AssertUtils.isNotEmpty(menuId, "菜单ID列表不能为空");
+
+        return menuMapper.selectMenusByParentId(menuId);
     }
 }
