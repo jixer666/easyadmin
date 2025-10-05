@@ -169,6 +169,7 @@
 <script>
 import {getMenuPage, addMenu, updateMenu, deleteMenu} from "@/api/menu";
 import IconSelect from "@/components/IconSelect";
+import {deleteRole} from "@/api/role";
 
 export default {
   name: 'Menu',
@@ -265,19 +266,21 @@ export default {
     },
     handleDelete(ids) {
       if (ids === null || ids.length === 0) {
-        this.$modal.msgWarning("未选中角色列表");
+        this.$modal.msgWarning("未选中菜单列表");
         return;
       }
-      this.loading = true;
-      deleteMenu({
-        menuIds: ids
-      }).then(res => {
-        this.$modal.msgSuccess("操作成功");
+      this.$modal.confirm('是否确认删除菜单编号为"' + ids + '"的数据项？').then(() => {
+        this.loading = true;
+        return deleteMenu({
+          menuIds: ids
+        });
+      }).then(() => {
+        this.$modal.msgSuccess("删除成功");
         this.loading = false;
         this.getList();
-      }).catch(error => {
+      }).catch(() => {
         this.loading = false;
-      })
+      });
     }
   }
 }

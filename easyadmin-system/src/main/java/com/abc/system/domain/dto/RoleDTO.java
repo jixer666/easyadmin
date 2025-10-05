@@ -40,6 +40,6 @@ public class RoleDTO {
 
     public void checkDeleteParams() {
         AssertUtils.isNotEmpty(this, "角色参数不能为空");
-        AssertUtils.isTrue(CollUtil.isNotEmpty(menuIds), "角色ID列表不能为空");
+        AssertUtils.isTrue(CollUtil.isNotEmpty(roleIds), "角色ID列表不能为空");
     }
 }

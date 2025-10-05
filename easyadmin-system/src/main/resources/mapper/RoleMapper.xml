@@ -59,4 +59,16 @@
         </foreach>
     </insert>
 
+    <delete id="deleteRoleByUserId">
+        delete from tb_user_role where user_id = #{userId}
+    </delete>
+
+    <insert id="saveUserRole">
+        insert into tb_user_role (user_id, role_id) values
+        <foreach collection="list" separator="," item="item">
+            (#{userId}, #{item})
+        </foreach>
+    </insert>
+
+
 </mapper>

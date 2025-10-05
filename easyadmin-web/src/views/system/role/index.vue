@@ -203,16 +203,19 @@ export default {
         this.$modal.msgWarning("未选中角色列表");
         return;
       }
-      this.loading = true;
-      deleteRole({
-        roleIds: ids
-      }).then(res => {
-        this.$modal.msgSuccess("操作成功");
+      this.$modal.confirm('是否确认删除角色编号为"' + ids + '"的数据项？').then(() => {
+        this.loading = true;
+        return deleteRole({
+          roleIds: ids
+        });
+      }).then(() => {
+        this.$modal.msgSuccess("删除成功");
         this.loading = false;
         this.getList();
-      }).catch(error => {
+      }).catch((error) => {
+        console.log(error)
         this.loading = false;
-      })
+      });
     },
     handleAdd() {
       this.dialogTitle = "新增角色";

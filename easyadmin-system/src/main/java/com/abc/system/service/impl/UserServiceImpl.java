@@ -1,12 +1,14 @@
 package com.abc.system.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import com.abc.common.core.service.BaseServiceImpl;
 import com.abc.common.domain.vo.PageResult;
 import com.abc.common.util.AssertUtils;
 import com.abc.common.domain.entity.User;
 import com.abc.system.convert.UserConvert;
 import com.abc.system.domain.dto.UserDTO;
+import com.abc.system.domain.vo.UserRoleVO;
 import com.abc.system.domain.vo.UserVO;
 import com.abc.system.mapper.UserMapper;
 import com.abc.system.service.RoleService;
@@ -14,6 +16,7 @@ import com.abc.system.service.UserService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -62,5 +65,36 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
         });
 
         return buildPageResult(userVOList);
+    }
+
+    @Override
+    public UserRoleVO getUserRole(Long userId) {
+        AssertUtils.isNotEmpty(userId, "用户ID不能为空");
+        List<?> roles = roleService.getRolePageWithUiParam(null).getList();
+        List<Long> roleIds = roleService.getRoleIdsByUserId(userId);
+
+        return UserConvert.buildUserRoleVO(roles, roleIds);
+    }
+
+    @Override
+    @Transactional
+    public void saveUserRole(UserDTO userDTO) {
+        userDTO.checkSaveUserRoleParams();
+        AssertUtils.isNotEmpty(getById(userDTO.getUserId()), "用户不存在");
+        deleteUserAllRoleByUserId(userDTO.getUserId());
+        saveUserRole(userDTO.getUserId(), userDTO.getRoleIds());
+    }
+
+    private void saveUserRole(Long userId, List<Long> roleIds) {
+        AssertUtils.isNotEmpty(userId, "用户ID不能为空");
+        AssertUtils.isTrue(CollUtil.isNotEmpty(roleIds), "角色ID列表不能为空");
+
+        roleService.saveUserRole(userId, roleIds);
+    }
+
+    private void deleteUserAllRoleByUserId(Long userId) {
+        AssertUtils.isNotEmpty(userId, "用户ID不能为空");
+
+        roleService.deleteRoleByUserId(userId);
     }
 }

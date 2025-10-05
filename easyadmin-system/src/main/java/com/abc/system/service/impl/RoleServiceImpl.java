@@ -126,4 +126,19 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, Role> implement
 
         return roleMapper.selectRoleIdsByMenuId(menuId);
     }
+
+    @Override
+    public void deleteRoleByUserId(Long userId) {
+        AssertUtils.isNotEmpty(userId, "用户ID不能为空");
+
+        roleMapper.deleteRoleByUserId(userId);
+    }
+
+    @Override
+    public void saveUserRole(Long userId, List<Long> roleIds) {
+        AssertUtils.isNotEmpty(userId, "用户ID不能为空");
+        AssertUtils.isTrue(CollUtil.isNotEmpty(roleIds), "角色ID列表不能为空");
+
+        roleMapper.saveUserRole(userId, roleIds);
+    }
 }

@@ -4,6 +4,8 @@ import cn.hutool.core.bean.BeanUtil;
 import com.abc.common.constant.CommonConstants;
 import com.abc.system.domain.dto.RegisterDTO;
 import com.abc.common.domain.entity.User;
+import com.abc.system.domain.vo.RoleVO;
+import com.abc.system.domain.vo.UserRoleVO;
 import com.abc.system.domain.vo.UserVO;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -28,4 +30,10 @@ public class UserConvert {
         return userVO;
     }
 
+    public static UserRoleVO buildUserRoleVO(List<?> roles, List<Long> roleIds) {
+        return UserRoleVO.builder()
+                .roleIds(roleIds)
+                .roles((List<RoleVO>) roles)
+                .build();
+    }
 }

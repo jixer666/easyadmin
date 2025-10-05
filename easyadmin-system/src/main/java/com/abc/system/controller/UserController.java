@@ -4,13 +4,12 @@ import com.abc.common.domain.vo.ApiResult;
 import com.abc.common.domain.vo.PageResult;
 import com.abc.common.util.SecurityUtils;
 import com.abc.system.domain.dto.UserDTO;
+import com.abc.system.domain.vo.UserRoleVO;
 import com.abc.system.domain.vo.UserVO;
 import com.abc.system.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/system/user")
@@ -34,6 +33,22 @@ public class UserController {
         PageResult pageResult = userService.getUserPageWithUiParam(userDTO);
 
         return ApiResult.success(pageResult);
+    }
+
+    @ApiOperation("查询用户角色")
+    @GetMapping("/getUserRole/{userId}")
+    public ApiResult<UserRoleVO> getUserRole(@PathVariable Long userId) {
+        UserRoleVO userRole = userService.getUserRole(userId);
+
+        return ApiResult.success(userRole);
+    }
+
+    @ApiOperation("分配用户角色")
+    @PostMapping("/saveUserRole")
+    public ApiResult<Void> saveUserRole(@RequestBody UserDTO userDTO) {
+        userService.saveUserRole(userDTO);
+
+        return ApiResult.success();
     }
 
 

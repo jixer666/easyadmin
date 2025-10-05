@@ -36,7 +36,7 @@ public class TableSupport {
     public static PageDTO getPageDTO() {
         PageDTO page = new PageDTO();
         page.setPageNum(Convert.toInt(ServletUtils.getParameter(PAGE_NUM), 1));
-        page.setPageSize(Convert.toInt(ServletUtils.getParameter(PAGE_SIZE), 10));
+        page.setPageSize(Convert.toInt(ServletUtils.getParameter(PAGE_SIZE), 1000));
         page.setOrderByColumn(ServletUtils.getParameter(ORDER_BY_COLUMN));
         page.setIsAsc(ServletUtils.getParameter(IS_ASC));
         page.setReasonable(ServletUtils.getParameterToBool(REASONABLE));

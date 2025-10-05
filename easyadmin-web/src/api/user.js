@@ -29,3 +29,18 @@ export function getUserPage(data) {
     params: data
   })
 }
+
+export function getUserRole(userId) {
+  return request({
+    url: '/system/user/getUserRole/' + userId,
+    method: 'get',
+  })
+}
+
+export function saveUserRole(data) {
+  return request({
+    url: '/system/user/saveUserRole',
+    method: 'post',
+    data
+  })
+}

@@ -27,4 +27,8 @@ public interface RoleService extends IService<Role> {
     void deleteRole(RoleDTO roleDTO);
 
     List<Long> getRoleIdsByMenuId(Long menuId);
+
+    void deleteRoleByUserId(Long userId);
+
+    void saveUserRole(Long userId, List<Long> roleIds);
 }

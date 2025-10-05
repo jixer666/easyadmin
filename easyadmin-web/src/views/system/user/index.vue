@@ -27,7 +27,7 @@
         <el-table-column label="昵称" align="center" key="nickname" prop="nickname" :show-overflow-tooltip="true" />
         <el-table-column label="头像" align="center" key="avatar" prop="avatar" :show-overflow-tooltip="true" width="100">
           <template slot-scope="scope">
-            <el-avatar size="40" :src="scope.row.avatar"></el-avatar>
+            <el-avatar size="medium" :src="scope.row.avatar"></el-avatar>
           </template>
         </el-table-column>
         <el-table-column label="状态" align="center" key="status" width="100">
@@ -58,6 +58,12 @@
               icon="el-icon-delete"
               @click="handleDelete([scope.row.userId])"
             >删除</el-button>
+            <el-button
+              size="mini"
+              type="text"
+              icon="el-icon-circle-check"
+              @click="handleUserRole(scope.row.userId)"
+            >分配角色</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -87,11 +93,33 @@
         <el-button type="primary" @click="onSubmit" :loading="submitLoading">确 定</el-button>
       </span>
     </el-dialog>
+    <el-dialog
+      :title="dialogTitle"
+      :visible.sync="dialogUserRoleVisible"
+      width="30%"
+      :before-close="handleClose">
+      <el-form ref="form" :model="form" label-width="80px" :rules="rules">
+        <el-form-item label="角色">
+          <el-select v-model="form.roleIds" placeholder="请选择角色" multiple>
+            <el-option
+              v-for="item in roleList"
+              :key="item.roleId"
+              :label="item.roleName"
+              :value="item.roleId">
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogUserRoleVisible = false">取 消</el-button>
+        <el-button type="primary" @click="onSubmitUserRole" :loading="submitLoading">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import {getUserPage, addUser, updateUser, deleteUser} from '@/api/user'
+import {getUserPage, addUser, updateUser, deleteUser, getUserRole, saveUserRole} from '@/api/user'
 
 export default {
   name: 'User',
@@ -102,7 +130,9 @@ export default {
         pageSize: 10,
         total: 0,
       },
-      form: {},
+      form: {
+        roleIds: []
+      },
       tableList: [],
       loading: false,
       submitLoading: false,
@@ -113,7 +143,9 @@ export default {
           { required: true, message: "用户昵称不能为空", trigger: "blur" }
         ],
       },
-      multipleSelectionIds: []
+      multipleSelectionIds: [],
+      roleList: [],
+      dialogUserRoleVisible: false,
     }
   },
   mounted() {
@@ -162,16 +194,18 @@ export default {
         this.$modal.msgWarning("未选中用户列表");
         return;
       }
-      this.loading = true;
-      deleteUser({
-        userIds: ids
-      }).then(res => {
-        this.$modal.msgSuccess("操作成功");
+      this.$modal.confirm('是否确认删除用户编号为"' + ids + '"的数据项？').then(() => {
+        this.loading = true;
+        return deleteUser({
+          userIds: ids
+        });
+      }).then(() => {
+        this.$modal.msgSuccess("删除成功");
         this.loading = false;
         this.getList();
-      }).catch(error => {
+      }).catch(() => {
         this.loading = false;
-      })
+      });
     },
     handleAdd() {
       this.dialogTitle = "新增用户";
@@ -180,12 +214,32 @@ export default {
     handleClose() {
       this.form = {
         menuCheckStrictly: true,
+        roleIds: []
       };
       this.dialogVisible = false;
-      this.dialogMenuVisible = false;
+      this.dialogUserRoleVisible = false;
     },
     handleSelectionChange(val) {
       this.multipleSelectionIds = val.map(item => item.userId);
+    },
+    handleUserRole(userId) {
+      this.dialogTitle = "分配用户角色";
+      this.form.userId = userId;
+      getUserRole(userId).then(res => {
+        this.roleList = res.data.roles;
+        this.form.roleIds = res.data.roleIds;
+        this.dialogUserRoleVisible = true;
+      })
+    },
+    onSubmitUserRole() {
+      this.submitLoading = true;
+      saveUserRole(this.form).then(res => {
+        this.$modal.msgSuccess("操作成功");
+        this.submitLoading = false;
+        this.dialogUserRoleVisible = false;
+      }).catch(error => {
+        this.submitLoading = false;
+      })
     }
   }
 }
