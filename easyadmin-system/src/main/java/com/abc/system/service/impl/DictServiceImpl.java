@@ -37,7 +37,7 @@ public class DictServiceImpl extends BaseServiceImpl<DictMapper, Dict> implement
     public void updateDict(DictDTO dictDTO) {
         dictDTO.checkUpdateParams();
         Dict dict = dictMapper.selectById(dictDTO.getDictId());
-        AssertUtils.isNotEmpty(dict, "菜单不存在");
+        AssertUtils.isNotEmpty(dict, "字典不存在");
         BeanUtils.copyProperties(dictDTO, dict);
         dictMapper.updateById(dict);
     }
