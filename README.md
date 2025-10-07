@@ -66,7 +66,8 @@ npm run build
 easyadmin/
 ├── easyadmin-common/          # 公共模块
 ├── easyadmin-system/          # 系统核心模块
-└── easyadmin-web/             # 前端代码文件
+├── easyadmin-web/             # 前端代码文件
+└── sql/             # 数据库表SQL
 ```
 
 ## 🔧 配置说明
