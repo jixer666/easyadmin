@@ -5,6 +5,8 @@ import com.abc.system.domain.dto.GenerateTableColumnDTO;
 import com.abc.system.domain.entity.GenerateTableColumn;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 public interface GenerateTableColumnService extends IService<GenerateTableColumn> {
 
     PageResult getGenerateTableColumnPageWithUiParam(GenerateTableColumnDTO menuDTO);
@@ -16,4 +18,8 @@ public interface GenerateTableColumnService extends IService<GenerateTableColumn
     void deleteGenerateTableColumn(GenerateTableColumnDTO menuDTO);
 
     void importTableColumn(String tableName, Long generateTableId);
+
+    void updateGenerateTableColumns(List<GenerateTableColumn> tableColumns);
+
+    void deleteGenerateTableColumnByGenTableIds(List<Long> genTableIds);
 }

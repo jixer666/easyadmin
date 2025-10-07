@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import fileRequest from '@/utils/fileRequest'
 
 export function getGenerateTablePage(data) {
   return request({
@@ -53,5 +54,20 @@ export function previewGenerateTable(genTableId) {
   return request({
     url: '/system/generateTable/preview/' + genTableId,
     method: 'post',
+  })
+}
+
+export function downloadGenerateTableCode(data) {
+  return fileRequest({
+    url: '/system/generateTable/download',
+    method: 'post',
+    data
+  })
+}
+
+export function getGenerateTableInfo(genTableId) {
+  return request({
+    url: '/system/generateTable/info/' + genTableId,
+    method: 'get',
   })
 }

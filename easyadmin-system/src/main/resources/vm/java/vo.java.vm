@@ -1,0 +1,16 @@
+package ${packageName}.domain.dto;
+
+import lombok.Data;
+
+/**
+ * ${functionName}VO对象
+ *
+ * @author ${author}
+ * @date ${datetime}
+ */
+@Data
+public class ${ClassName}DTO {
+
+    private Long ${className}Id;
+
+}

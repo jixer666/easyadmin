@@ -17,4 +17,7 @@ public interface GenerateTableMapper extends BaseMapper<GenerateTable> {
     List<GenerateTable> selectDbTableListByNames(@Param("list") List<String> tableNames);
 
     GenerateTable selectGenerateTableByGenTableId(Long genTableId);
+
+    List<GenerateTable> selectGenerateTableByGenTableIds(@Param("list") List<Long> genTableIds);
+
 }

@@ -5,6 +5,7 @@ import com.abc.system.domain.dto.GenerateTableDTO;
 import com.abc.system.domain.entity.GenerateTable;
 import com.abc.system.domain.vo.GenerateTablePreviewVO;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.http.ResponseEntity;
 
 public interface GenerateTableService extends IService<GenerateTable> {
 
@@ -23,4 +24,6 @@ public interface GenerateTableService extends IService<GenerateTable> {
     GenerateTablePreviewVO previewCode(Long genTableId);
 
     GenerateTable getGenerateTableByGenTableId(Long genTableId);
+
+    ResponseEntity<byte[]> downloadCode(GenerateTableDTO generateTableDTO);
 }

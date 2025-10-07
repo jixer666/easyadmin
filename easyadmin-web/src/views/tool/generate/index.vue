@@ -2,8 +2,8 @@
   <div class="generateTable-container">
     <div>
       <el-form :inline="true" :model="searchForm" class="demo-form-inline">
-        <el-form-item label="角色名称">
-          <el-input v-model="searchForm.generateTableName" placeholder="请输入角色名称"></el-input>
+        <el-form-item label="表名称">
+          <el-input v-model="searchForm.generateTableName" placeholder="请输入表名称"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="getList" size="medium">搜索</el-button>
@@ -56,13 +56,13 @@
               size="mini"
               type="text"
               icon="el-icon-delete"
-              @click="handleDelete([scope.row.generateTableId])"
+              @click="handleDelete([scope.row.genTableId])"
             >删除</el-button>
             <el-button
               size="mini"
               type="text"
               icon="el-icon-upload"
-              @click="handleUpdate(scope.row)"
+              @click="handleGenerateCode([scope.row.genTableId])"
             >生成代码</el-button>
           </template>
         </el-table-column>
@@ -75,29 +75,6 @@
       :limit.sync="searchForm.pageSize"
       @pagination="getList"
     />
-    <el-dialog
-      :title="dialogTitle"
-      :visible.sync="dialogVisible"
-      width="30%"
-      :before-close="handleClose">
-      <el-form ref="form" :model="form" label-width="80px" :rules="rules">
-        <el-form-item label="角色名称" prop="generateTableName">
-          <el-input v-model="form.generateTableName"></el-input>
-        </el-form-item>
-        <el-form-item label="角色字符" prop="generateTableKey">
-          <el-input v-model="form.generateTableKey"></el-input>
-        </el-form-item>
-        <el-form-item label="角色状态">
-          <el-radio-group v-model="form.status">
-            <el-radio :label="parseInt(item.value)" v-for="(item, index) in dict.type.common_status" :key="index">{{ item.label }}</el-radio>
-          </el-radio-group>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="onSubmit" :loading="submitLoading">确 定</el-button>
-      </span>
-    </el-dialog>
 
     <el-drawer
       :title="dialogGenTableDbTitle"
@@ -152,6 +129,106 @@
       </el-tabs>
     </el-dialog>
 
+    <el-drawer
+      :title="dialogGenTableDbTitle"
+      :visible.sync="drawerGenTableUpdateVisible"
+      direction="rtl"
+      size="70%"
+      :before-close="handleClose">
+      <div class="drawer-div">
+        <el-tabs v-model="drawerUpdateActiveName" :loading="genDbLoading">
+          <el-tab-pane label="表信息" name="table">
+            <el-form :model="form" label-width="80px">
+              <el-row>
+                <el-col :span="12">
+                  <el-form-item label="表名称">
+                    <el-input v-model="form.tableName"></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="表注释">
+                    <el-input v-model="form.tableComment"></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="12">
+                  <el-form-item label="实体名称">
+                    <el-input v-model="form.className"></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="作者">
+                    <el-input v-model="form.functionAuthor"></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="12">
+                  <el-form-item label="包路径">
+                    <el-input v-model="form.packageName"></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="模块名">
+                    <el-input v-model="form.moduleName"></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="12">
+                  <el-form-item label="功能名">
+                    <el-input v-model="form.functionName"></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="业务名">
+                    <el-input v-model="form.businessName"></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </el-form>
+          </el-tab-pane>
+          <el-tab-pane label="字段信息" name="tableColumn">
+            <el-table :data="form.tableColumns">
+              <el-table-column label="字段名称" align="center" key="columnName" prop="columnName" :show-overflow-tooltip="true" />
+              <el-table-column label="字段类型" align="center" key="columnType" prop="columnType"" :show-overflow-tooltip="true" />
+              <el-table-column label="字段注释" align="center" key="columnComment" prop="columnComment" :show-overflow-tooltip="true">
+                <template slot-scope="scope">
+                  <el-input v-model="scope.row.columnComment"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column label="Java字段" align="center" key="javaField" prop="javaField" :show-overflow-tooltip="true">
+                <template slot-scope="scope">
+                  <el-input v-model="scope.row.javaField"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column label="Java类型" align="center" key="updateTime" prop="updateTime" :show-overflow-tooltip="true">
+                <template slot-scope="scope">
+                  <el-select v-model="scope.row.javaType">
+                    <el-option :label="item.label" :value="item.value" v-for="(item, index) in dict.type.system_java_type" :key="index"/>
+                  </el-select>
+                </template>
+              </el-table-column>
+              <el-table-column label="必填">
+                <template slot-scope="scope">
+                  <el-checkbox true-label="1" false-label="0" v-model="scope.row.isRequire" :true-label="1" :false-label="0"></el-checkbox>
+                </template>
+              </el-table-column>
+              <el-table-column label="主键">
+                <template slot-scope="scope">
+                  <el-checkbox true-label="1" false-label="0" v-model="scope.row.isPk" :true-label="1" :false-label="0"></el-checkbox>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-tab-pane>
+        </el-tabs>
+        <div class="update-btn">
+          <el-button size="medium" type="primary" @click="submitUpdate" :loading="submitLoading">保存</el-button>
+        </div>
+      </div>
+    </el-drawer>
+
   </div>
 </template>
 
@@ -161,7 +238,7 @@ import {
   addGenerateTable,
   updateGenerateTable,
   deleteGenerateTable,
-  getGenerateTableDbPage, importGenerateTable, previewGenerateTable
+  getGenerateTableDbPage, importGenerateTable, previewGenerateTable, downloadGenerateTableCode, getGenerateTableInfo
 } from '@/api/system/generateTable';
 import hljs from "highlight.js/lib/highlight";
 import "highlight.js/styles/github-gist.css";
@@ -175,7 +252,7 @@ hljs.registerLanguage("sql", require("highlight.js/lib/languages/sql"));
 
 export default {
   name: 'GenerateTable',
-  dicts: ['common_status'],
+  dicts: ['common_status', 'system_java_type'],
   directives: {
     clipboard
   },
@@ -200,19 +277,21 @@ export default {
       dialogVisible: false,
       dialogPreviewVisible: false,
       drawerGenTableDbVisible: false,
+      drawerGenTableUpdateVisible: false,
       dialogTitle: null,
       dialogGenTableDbTitle: null,
       rules: {
         generateTableName: [
-          { required: true, message: "角色名称不能为空", trigger: "blur" }
+          { required: true, message: "表名称不能为空", trigger: "blur" }
         ],
         generateTableKey: [
-          { required: true, message: "角色字符不能为空", trigger: "blur" }
+          { required: true, message: "表字符不能为空", trigger: "blur" }
         ],
       },
       multipleSelectionIds: [],
       previewData: {},
-      previewTabActiveName: "entity.java"
+      previewTabActiveName: "entity.java",
+      drawerUpdateActiveName: "table"
     }
   },
   mounted() {
@@ -229,42 +308,27 @@ export default {
         this.loading = false;
       })
     },
-    onSubmit() {
-      this.$refs["form"].validate(valid => {
-        if (valid) {
-          this.submitLoading = true;
-          if (this.form.generateTableId != undefined) {
-            updateGenerateTable(this.form).then(response => {
-              this.$modal.msgSuccess("修改成功");
-              this.submitLoading = false;
-              this.dialogVisible = false;
-              this.getList();
-            });
-          } else {
-            addGenerateTable(this.form).then(response => {
-              this.$modal.msgSuccess("新增成功");
-              this.submitLoading = false;
-              this.dialogVisible = false;
-              this.getList();
-            });
-          }
-        }
-      });
-    },
     handleUpdate(item) {
       this.form = item;
-      this.dialogTitle = "修改角色";
-      this.dialogVisible = true;
+      this.dialogGenTableDbTitle = "修改表";
+      this.drawerGenTableUpdateVisible = true;
+      this.genDbLoading = true;
+      getGenerateTableInfo(item.genTableId).then(res => {
+        this.form = res.data;
+        this.genDbLoading = false;
+      }).catch(error => {
+        this.genDbLoading = false;
+      })
     },
     handleDelete(ids) {
       if (ids === null || ids.length === 0) {
-        this.$modal.msgWarning("未选中角色列表");
+        this.$modal.msgWarning("未选中表列表");
         return;
       }
-      this.$modal.confirm('是否确认删除角色编号为"' + ids + '"的数据项？').then(() => {
+      this.$modal.confirm('是否确认删除表编号为"' + ids + '"的数据项？').then(() => {
         this.loading = true;
         return deleteGenerateTable({
-          generateTableIds: ids
+          genTableIds: ids
         });
       }).then(() => {
         this.$modal.msgSuccess("删除成功");
@@ -280,6 +344,7 @@ export default {
       };
       this.dialogVisible = false;
       this.drawerGenTableDbVisible = false;
+      this.drawerGenTableUpdateVisible = false;
     },
     handleSelectionChange(val) {
       this.multipleSelectionIds = val.map(item => item.generateTableId);
@@ -328,6 +393,29 @@ export default {
       const result = hljs.highlight(language, code || "", true);
       return result.value || '&nbsp;';
     },
+    handleGenerateCode(data) {
+      this.loading = true;
+      downloadGenerateTableCode({
+        genTableIds: data
+      }).then(res => {
+        this.$modal.msgSuccess("生成成功");
+        this.loading = false;
+      }).catch(error => {
+        this.loading = false;
+      })
+    },
+    submitUpdate() {
+      this.submitLoading = true;
+      updateGenerateTable(this.form).then(res => {
+        this.$modal.msgSuccess("操作成功");
+        this.drawerGenTableUpdateVisible = false;
+        this.submitLoading = false;
+        this.getList();
+      }).catch(error => {
+        this.submitLoading = false;
+      })
+
+    }
   }
 }
 </script>
@@ -352,5 +440,10 @@ export default {
 
 .drawer-div {
   padding: 0 10px;
+}
+
+.update-btn{
+  padding: 10px 0;
+  text-align: center;
 }
 </style>

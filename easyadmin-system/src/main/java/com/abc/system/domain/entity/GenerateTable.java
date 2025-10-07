@@ -1,6 +1,7 @@
 package com.abc.system.domain.entity;
 
 import com.abc.common.domain.entity.BaseEntity;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
@@ -36,6 +37,7 @@ public class GenerateTable extends BaseEntity {
 
     private Long userId;
 
+    @TableField(exist = false)
     private List<GenerateTableColumn> tableColumns;
 
 }

@@ -1,6 +1,7 @@
 package com.abc.system.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import com.abc.common.core.service.BaseServiceImpl;
 import com.abc.common.domain.vo.PageResult;
 import com.abc.common.util.AssertUtils;
@@ -70,5 +71,21 @@ public class GenerateTableColumnServiceImpl extends BaseServiceImpl<GenerateTabl
         }).collect(Collectors.toList());
 
         saveBatch(tableColumns);
+    }
+
+    @Override
+    public void updateGenerateTableColumns(List<GenerateTableColumn> tableColumns) {
+        if (CollUtil.isEmpty(tableColumns)) {
+            return;
+        }
+        updateBatchById(tableColumns);
+    }
+
+    @Override
+    public void deleteGenerateTableColumnByGenTableIds(List<Long> genTableIds) {
+        if (CollUtil.isEmpty(genTableIds)) {
+            return;
+        }
+        generateTableColumnMapper.deleteGenerateTableColumnByGenTableIds(genTableIds);
     }
 }

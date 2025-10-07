@@ -51,4 +51,11 @@ public class GeneratorConstants {
 
     public static final List<String> FILTER_COLUMN = Arrays.asList("create_time", "update_time", "status", "ver");
 
+    /** 项目空间路径 */
+    public static final String PROJECT_PATH = "main/java";
+
+    /** mybatis空间路径 */
+    public static final String MYBATIS_PATH = "main/resources/mapper";
+
+
 }

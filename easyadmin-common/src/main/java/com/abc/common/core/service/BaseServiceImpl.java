@@ -6,7 +6,12 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.function.Function;
 
@@ -29,5 +34,18 @@ public class BaseServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M, 
                 .list(list)
                 .total(new PageInfo(list).getTotal())
                 .build();
+    }
+
+    public ResponseEntity<byte[]> download(byte[] fileData, String filename) {
+        HttpHeaders headers = new HttpHeaders();
+        ContentDisposition contentDisposition = ContentDisposition.builder("attachment")
+                .filename(filename, StandardCharsets.UTF_8)
+                .build();
+        headers.setContentDisposition(contentDisposition);
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentLength(fileData.length)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(fileData);
     }
 }

@@ -87,31 +87,31 @@
           </el-radio-group>
         </el-form-item>
         <el-row>
-          <el-col :span="11">
+          <el-col :span="12">
             <el-form-item label="菜单名称">
               <el-input v-model="menuForm.menuName"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="11">
+          <el-col :span="12">
             <el-form-item label="菜单顺序">
               <el-input-number v-model="menuForm.orderNum" :min="1" ></el-input-number>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="11">
+          <el-col :span="12">
             <el-form-item label="路由路径">
               <el-input v-model="menuForm.path"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="11">
+          <el-col :span="12">
             <el-form-item label="组件路径">
               <el-input v-model="menuForm.component"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="11">
+          <el-col :span="12">
             <el-form-item label="菜单图标">
               <el-popover
                 placement="bottom-start"
@@ -132,21 +132,21 @@
               </el-popover>
             </el-form-item>
           </el-col>
-          <el-col :span="11">
+          <el-col :span="12">
             <el-form-item label="权限字符">
               <el-input v-model="menuForm.perms"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="11">
+          <el-col :span="12">
             <el-form-item label="显示状态">
               <el-radio-group v-model="menuForm.hidden">
                 <el-radio :label="parseInt(item.value)" v-for="(item, index) in dict.type.system_menu_hidden" :key="index">{{ item.label }}</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
-          <el-col :span="11">
+          <el-col :span="12">
             <el-form-item label="菜单状态">
               <el-radio-group v-model="menuForm.status">
                 <el-radio :label="parseInt(item.value)" v-for="(item, index) in dict.type.common_status" :key="index">{{ item.label }}</el-radio>

@@ -3,7 +3,7 @@ package com.abc.system.convert;
 import cn.hutool.core.bean.BeanUtil;
 import com.abc.common.constant.GeneratorConstants;
 import com.abc.common.util.DateUtils;
-import com.abc.common.util.GenerateUtils;
+import com.abc.system.util.GenerateUtils;
 import com.abc.common.util.IdUtils;
 import com.abc.common.util.StringUtils;
 import com.abc.system.domain.dto.GenerateTableDTO;

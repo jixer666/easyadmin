@@ -52,5 +52,14 @@
         order by ordinal_position
     </select>
 
+    <delete id="deleteGenerateTableColumnByGenTableIds">
+        delete from tb_gen_table_column
+        <where>
+            gen_table_id in
+            <foreach collection="list" separator="," open="(" close=")" item="item">
+                #{item}
+            </foreach>
+        </where>
+    </delete>
 
 </mapper>

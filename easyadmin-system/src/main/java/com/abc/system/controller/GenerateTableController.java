@@ -3,11 +3,13 @@ package com.abc.system.controller;
 import com.abc.common.domain.vo.ApiResult;
 import com.abc.common.domain.vo.PageResult;
 import com.abc.system.domain.dto.GenerateTableDTO;
+import com.abc.system.domain.entity.GenerateTable;
 import com.abc.system.domain.vo.GenerateTablePreviewVO;
 import com.abc.system.service.GenerateTableService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Api(tags = "代码生成表接口")
@@ -74,5 +76,19 @@ public class GenerateTableController {
         return ApiResult.success(previewVO);
     }
 
+    @ApiOperation("生成代码")
+    @PostMapping("/download")
+    public ResponseEntity<byte[]> downloadCode(@RequestBody GenerateTableDTO generateTableDTO) {
+
+        return generateTableService.downloadCode(generateTableDTO);
+    }
+
+    @ApiOperation("获取生成表信息")
+    @GetMapping("/info/{genTableId}")
+    public ApiResult<GenerateTable> getGenerateTableInfo(@PathVariable Long genTableId) {
+        GenerateTable genTable = generateTableService.getGenerateTableByGenTableId(genTableId);
+
+        return ApiResult.success(genTable);
+    }
 
 }
