@@ -199,6 +199,8 @@ export default {
               this.submitLoading = false;
               this.dialogVisible = false;
               this.getList();
+            }).catch(error => {
+              this.submitLoading = false;
             });
           } else {
             addUser(this.form).then(response => {
@@ -206,6 +208,8 @@ export default {
               this.submitLoading = false;
               this.dialogVisible = false;
               this.getList();
+            }).catch(error => {
+              this.submitLoading = false;
             });
           }
         }

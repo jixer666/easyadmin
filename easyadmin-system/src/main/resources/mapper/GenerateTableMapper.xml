@@ -65,6 +65,7 @@
         where table_schema = (select database())
           AND table_name NOT LIKE 'tb_qrtz_%' AND table_name NOT LIKE 'tb_gen_%'
           AND table_name NOT IN (select table_name from tb_gen_table)
+        order by create_time desc
     </select>
 
     <select id="selectGenerateTableList" resultMap="GenerateTableResult">

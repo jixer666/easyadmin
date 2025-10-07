@@ -1,9 +1,9 @@
 <template>
-  <div class="role-container">
+  <div class="file-container">
     <div>
       <el-form :inline="true" :model="searchForm" class="demo-form-inline">
-        <el-form-item label="角色名称">
-          <el-input v-model="searchForm.roleName" placeholder="请输入角色名称"></el-input>
+        <el-form-item label="文件名称">
+          <el-input v-model="searchForm.fileName" placeholder="请输入文件名称"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="getList" size="medium">搜索</el-button>
@@ -23,8 +23,14 @@
     <div>
       <el-table v-loading="loading" :data="tableList" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="50" align="center" />
-        <el-table-column label="角色名称" align="center" key="roleName" prop="roleName" :show-overflow-tooltip="true" />
-        <el-table-column label="角色字符" align="center" key="roleKey" prop="roleKey" :show-overflow-tooltip="true" />
+        <el-table-column label="文件ID" align="center" key="fileId" prop="fileId" :show-overflow-tooltip="true" />
+        <el-table-column label="文件名称" align="center" key="filename" prop="filename" :show-overflow-tooltip="true" />
+        <el-table-column label="文件大小" align="center" key="totalSize" prop="totalSize" :show-overflow-tooltip="true" />
+        <el-table-column label="文件类型" align="center" key="fileType" prop="fileType" :show-overflow-tooltip="true" />
+        <el-table-column label="文件MD5" align="center" key="fileMd5" prop="fileMd5" :show-overflow-tooltip="true" />
+        <el-table-column label="OSS类型" align="center" key="ossType" prop="ossType" :show-overflow-tooltip="true" />
+        <el-table-column label="文件路径" align="center" key="filePath" prop="filePath" :show-overflow-tooltip="true" />
+        <el-table-column label="用户ID" align="center" key="userId" prop="userId" :show-overflow-tooltip="true" />
         <el-table-column label="状态" align="center" key="status" width="100">
           <template slot-scope="scope">
             <dict-tag :options="dict.type.common_status" :value="scope.row.status"/>
@@ -35,47 +41,62 @@
         <el-table-column label="更新时间" align="center" prop="updateTime" width="160">
         </el-table-column>
         <el-table-column
-            label="操作"
-            align="center"
-            width="250"
+          label="操作"
+          align="center"
+          width="250"
         >
           <template slot-scope="scope">
             <el-button
-                size="mini"
-                type="text"
-                icon="el-icon-edit"
-                @click="handleUpdate(scope.row)"
+              size="mini"
+              type="text"
+              icon="el-icon-edit"
+              @click="handleUpdate(scope.row)"
             >修改</el-button>
             <el-button
-                size="mini"
-                type="text"
-                icon="el-icon-delete"
-                @click="handleDelete([scope.row.roleId])"
+              size="mini"
+              type="text"
+              icon="el-icon-delete"
+              @click="handleDelete([scope.row.fileId])"
             >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
     <pagination
-        v-show="searchForm.total > 0"
-        :total="searchForm.total"
-        :page.sync="searchForm.pageNum"
-        :limit.sync="searchForm.pageSize"
-        @pagination="getList"
+      v-show="searchForm.total > 0"
+      :total="searchForm.total"
+      :page.sync="searchForm.pageNum"
+      :limit.sync="searchForm.pageSize"
+      @pagination="getList"
     />
     <el-dialog
-        :title="dialogTitle"
-        :visible.sync="dialogVisible"
-        width="30%"
-        :before-close="handleClose">
+      :title="dialogTitle"
+      :visible.sync="dialogVisible"
+      width="30%"
+      :before-close="handleClose">
       <el-form ref="form" :model="form" label-width="80px" :rules="rules">
-        <el-form-item label="角色名称" prop="roleName">
-          <el-input v-model="form.roleName"></el-input>
+        <el-form-item label="文件名称" prop="filename">
+          <el-input v-model="form.filename"></el-input>
         </el-form-item>
-        <el-form-item label="角色字符" prop="roleKey">
-          <el-input v-model="form.roleKey"></el-input>
+        <el-form-item label="文件大小" prop="totalSize">
+          <el-input v-model="form.totalSize"></el-input>
         </el-form-item>
-        <el-form-item label="角色状态">
+        <el-form-item label="文件类型" prop="fileType">
+          <el-input v-model="form.fileType"></el-input>
+        </el-form-item>
+        <el-form-item label="文件MD5" prop="fileMd5">
+          <el-input v-model="form.fileMd5"></el-input>
+        </el-form-item>
+        <el-form-item label="OSS类型" prop="ossType">
+          <el-input v-model="form.ossType"></el-input>
+        </el-form-item>
+        <el-form-item label="文件路径" prop="filePath">
+          <el-input v-model="form.filePath"></el-input>
+        </el-form-item>
+        <el-form-item label="用户ID" prop="userId">
+          <el-input v-model="form.userId"></el-input>
+        </el-form-item>
+        <el-form-item label="文件状态">
           <el-radio-group v-model="form.status">
             <el-radio :label="parseInt(item.value)" v-for="(item, index) in dict.type.common_status" :key="index">{{ item.label }}</el-radio>
           </el-radio-group>
@@ -90,10 +111,10 @@
 </template>
 
 <script>
-import {getRolePage, addRole, updateRole, deleteRole} from '@/api/system/role'
+import {getFilePage, addFile, updateFile, deleteFile} from '@/api/system/file'
 
 export default {
-  name: 'Role',
+  name: 'File',
   dicts: ['common_status'],
   data() {
     return {
@@ -109,11 +130,11 @@ export default {
       dialogVisible: false,
       dialogTitle: null,
       rules: {
-        roleName: [
-          { required: true, message: "角色名称不能为空", trigger: "blur" }
+        fileName: [
+          { required: true, message: "文件名称不能为空", trigger: "blur" }
         ],
-        roleKey: [
-          { required: true, message: "角色字符不能为空", trigger: "blur" }
+        fileKey: [
+          { required: true, message: "文件字符不能为空", trigger: "blur" }
         ],
       },
       multipleSelectionIds: []
@@ -125,7 +146,7 @@ export default {
   methods: {
     getList() {
       this.loading = true;
-      getRolePage(this.searchForm).then(res => {
+      getFilePage(this.searchForm).then(res => {
         this.tableList = res.data.list;
         this.searchForm.total = parseInt(res.data.total);
         this.loading = false;
@@ -137,19 +158,23 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           this.submitLoading = true;
-          if (this.form.roleId != undefined) {
-            updateRole(this.form).then(response => {
+          if (this.form.fileId != undefined) {
+            updateFile(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.submitLoading = false;
               this.dialogVisible = false;
               this.getList();
+            }).catch(error => {
+              this.submitLoading = false;
             });
           } else {
-            addRole(this.form).then(response => {
+            addFile(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.submitLoading = false;
               this.dialogVisible = false;
               this.getList();
+            }).catch(error => {
+              this.submitLoading = false;
             });
           }
         }
@@ -157,18 +182,18 @@ export default {
     },
     handleUpdate(item) {
       this.form = item;
-      this.dialogTitle = "修改角色";
+      this.dialogTitle = "修改文件";
       this.dialogVisible = true;
     },
     handleDelete(ids) {
       if (ids === null || ids.length === 0) {
-        this.$modal.msgWarning("未选中角色列表");
+        this.$modal.msgWarning("未选中文件列表");
         return;
       }
-      this.$modal.confirm('是否确认删除角色编号为"' + ids + '"的数据项？').then(() => {
+      this.$modal.confirm('是否确认删除文件编号为"' + ids + '"的数据项？').then(() => {
         this.loading = true;
-        return deleteRole({
-          roleIds: ids
+        return deleteFile({
+          fileIds: ids
         });
       }).then(() => {
         this.$modal.msgSuccess("删除成功");
@@ -179,7 +204,7 @@ export default {
       });
     },
     handleAdd() {
-      this.dialogTitle = "新增角色";
+      this.dialogTitle = "新增文件";
       this.dialogVisible = true;
     },
     handleClose() {
@@ -189,14 +214,14 @@ export default {
       this.dialogVisible = false;
     },
     handleSelectionChange(val) {
-      this.multipleSelectionIds = val.map(item => item.roleId);
+      this.multipleSelectionIds = val.map(item => item.fileId);
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.role-container {
+.file-container {
   padding: 20px;
 }
 

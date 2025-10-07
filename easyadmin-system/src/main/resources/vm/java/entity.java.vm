@@ -22,9 +22,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ${ClassName} extends BaseEntity {
 
-#foreach ($column in $columns)
+#foreach ($column in $filterColumns)
+#if($column.isPk)
+    @TableId
     @ApiModelProperty("$column.columnComment")
     private $column.javaType $column.javaField;
+
+#else
+    @ApiModelProperty("$column.columnComment")
+    private $column.javaType $column.javaField;
+
+#end
 #end
 
 }

@@ -50,7 +50,8 @@ public class GenerateTableConvert {
 //        velocityContext.put("pkColumn", genTable.getPkColumn());
 //        velocityContext.put("importList", getImportList(genTable));
 //        velocityContext.put("permissionPrefix", getPermissionPrefix(moduleName, businessName));
-        velocityContext.put("columns", filterTableColumn(genTable.getTableColumns()));
+        velocityContext.put("columns", genTable.getTableColumns());
+        velocityContext.put("filterColumns", filterTableColumn(genTable.getTableColumns()));
         velocityContext.put("table", genTable);
 //        velocityContext.put("dicts", getDicts(genTable));
         velocityContext.put("tableName", genTable.getTableName());

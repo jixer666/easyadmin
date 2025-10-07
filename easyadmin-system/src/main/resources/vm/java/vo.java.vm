@@ -1,5 +1,6 @@
-package ${packageName}.domain.dto;
+package ${packageName}.domain.vo;
 
+import java.util.Date;
 import lombok.Data;
 
 /**
@@ -9,8 +10,11 @@ import lombok.Data;
  * @date ${datetime}
  */
 @Data
-public class ${ClassName}DTO {
+public class ${ClassName}VO {
 
-    private Long ${className}Id;
+    #foreach ($column in $columns)
+        private $column.javaType $column.javaField;
+
+    #end
 
 }

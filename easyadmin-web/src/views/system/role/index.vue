@@ -186,6 +186,8 @@ export default {
               this.submitLoading = false;
               this.dialogVisible = false;
               this.getList();
+            }).catch(error => {
+              this.submitLoading = false;
             });
           } else {
             addRole(this.form).then(response => {
@@ -193,6 +195,8 @@ export default {
               this.submitLoading = false;
               this.dialogVisible = false;
               this.getList();
+            }).catch(error => {
+              this.submitLoading = false;
             });
           }
         }

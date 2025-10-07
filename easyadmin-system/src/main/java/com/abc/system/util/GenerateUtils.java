@@ -71,6 +71,7 @@ public class GenerateUtils {
                 "vm/java/dto.java.vm",
                 "vm/java/vo.java.vm",
                 "vm/java/convert.java.vm",
+                "vm/xml/mapper.xml.vm",
                 "vm/js/api.js.vm",
                 "vm/vue/index.vue.vm"
         );
@@ -100,7 +101,7 @@ public class GenerateUtils {
         } else if (template.contains("dto.java.vm")) {
             fileName = StringUtils.format("{}/domain/dto/{}DTO.java", javaPath, className);
         } else if (template.contains("convert.java.vm")) {
-            fileName = StringUtils.format("{}/domain/dto/{}Convert.java", javaPath, className);
+            fileName = StringUtils.format("{}/convert/{}Convert.java", javaPath, className);
         }else if (template.contains("mapper.java.vm")) {
             fileName = StringUtils.format("{}/mapper/{}Mapper.java", javaPath, className);
         } else if (template.contains("service.java.vm")) {

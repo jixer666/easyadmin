@@ -229,6 +229,8 @@ export default {
               this.submitLoading = false;
               this.dialogVisible = false;
               this.getList();
+            }).catch(error => {
+              this.submitLoading = false;
             });
           } else {
             addDict(this.form).then(response => {
@@ -236,6 +238,8 @@ export default {
               this.submitLoading = false;
               this.dialogVisible = false;
               this.getList();
+            }).catch(error => {
+              this.submitLoading = false;
             });
           }
         }

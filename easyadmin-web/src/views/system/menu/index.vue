@@ -232,6 +232,8 @@ export default {
               this.submitLoading = false;
               this.dialogVisible = false;
               this.getList();
+            }).catch(error => {
+              this.submitLoading = false;
             });
           } else {
             addMenu(this.menuForm).then(response => {
@@ -239,6 +241,8 @@ export default {
               this.submitLoading = false;
               this.dialogVisible = false;
               this.getList();
+            }).catch(error => {
+              this.submitLoading = false;
             });
           }
         }

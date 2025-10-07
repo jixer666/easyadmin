@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import com.abc.common.util.AssertUtils;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -15,7 +16,10 @@ import java.util.List;
 @Data
 public class ${ClassName}DTO {
 
-    private Long ${className}Id;
+    #foreach ($column in $columns)
+        private $column.javaType $column.javaField;
+
+    #end
 
     // 用于批量删除
     private List<Long> ${className}Ids;

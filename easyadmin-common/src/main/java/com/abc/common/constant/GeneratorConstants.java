@@ -24,7 +24,7 @@ public class GeneratorConstants {
 
     /** 数据库数字类型 */
     public static final List<String> COLUMN_TYPE_INT = Arrays.asList("tinyint", "smallint", "mediumint", "int",
-            "number", "integer", "bit", "bigint");
+            "number", "integer", "bit");
 
     public static final List<String> COLUMN_TYPE_BIGINT = Arrays.asList("bigint");
 
