@@ -31,4 +31,6 @@ public interface RoleService extends IService<Role> {
     void deleteRoleByUserId(Long userId);
 
     void saveUserRole(Long userId, List<Long> roleIds);
+
+    Boolean isAdmin(Long userId);
 }

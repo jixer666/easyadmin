@@ -77,7 +77,7 @@ public class CommonConstants {
     /**
      * 管理员角色权限标识
      */
-    public static final String SUPER_ADMIN = "admin";
+    public static final String SUPER_ADMIN = "super_admin";
 
     /**
      * 角色权限分隔符
@@ -198,4 +198,5 @@ public class CommonConstants {
      * 系统名称
      */
     public static final String SYSTEM_NAME = "EasyAdmin";
+
 }

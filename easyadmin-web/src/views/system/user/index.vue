@@ -57,12 +57,13 @@
               icon="el-icon-delete"
               @click="handleDelete([scope.row.userId])"
             >删除</el-button>
-            <el-button
-              size="mini"
-              type="text"
-              icon="el-icon-circle-check"
-              @click="handleUserRole(scope.row.userId)"
-            >分配角色</el-button>
+            <el-dropdown size="mini" @command="(command) => handleCommand(command, scope.row)">
+              <el-button size="mini" type="text" icon="el-icon-d-arrow-right">更多</el-button>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item command="resetPwd" icon="el-icon-refresh-left">重置密码</el-dropdown-item>
+                <el-dropdown-item command="authRole" icon="el-icon-circle-check">分配角色</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </template>
         </el-table-column>
       </el-table>
@@ -119,11 +120,26 @@
         <el-button type="primary" @click="onSubmitUserRole" :loading="submitLoading">确 定</el-button>
       </span>
     </el-dialog>
+    <el-dialog
+      :title="dialogTitle"
+      :visible.sync="dialogResetPwdVisible"
+      width="30%"
+      :before-close="handleClose">
+      <el-form ref="form" :model="form" label-width="80px" :rules="resetRules">
+        <el-form-item label="新密码" prop="newPassword">
+          <el-input v-model="form.newPassword"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogResetPwdVisible = false">取 消</el-button>
+        <el-button type="primary" @click="submitResetPwd" :loading="submitLoading">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import {getUserPage, addUser, updateUser, deleteUser, getUserRole, saveUserRole} from '@/api/system/user'
+import {getUserPage, addUser, updateUser, deleteUser, getUserRole, saveUserRole, resetPassword} from '@/api/system/user'
 
 export default {
   name: 'User',
@@ -142,10 +158,16 @@ export default {
       loading: false,
       submitLoading: false,
       dialogVisible: false,
+      dialogResetPwdVisible: false,
       dialogTitle: null,
       rules: {
         nickname: [
           { required: true, message: "用户昵称不能为空", trigger: "blur" }
+        ],
+      },
+      resetRules: {
+        newPassword: [
+          { required: true, message: "密码不能为空", trigger: "blur" }
         ],
       },
       multipleSelectionIds: [],
@@ -223,6 +245,7 @@ export default {
       };
       this.dialogVisible = false;
       this.dialogUserRoleVisible = false;
+      this.dialogResetPwdVisible = false;
     },
     handleSelectionChange(val) {
       this.multipleSelectionIds = val.map(item => item.userId);
@@ -245,7 +268,34 @@ export default {
       }).catch(error => {
         this.submitLoading = false;
       })
-    }
+    },
+    handleResetPwd(userId) {
+      this.form.userId = userId;
+      this.dialogTitle = "重置密码";
+      this.dialogResetPwdVisible = true;
+    },
+    submitResetPwd() {
+      this.submitLoading = true;
+      resetPassword(this.form).then(res => {
+        this.$modal.msgSuccess("操作成功");
+        this.submitLoading = false;
+        this.dialogResetPwdVisible = false;
+      }).catch(error => {
+        this.submitLoading = false;
+      })
+    },
+    handleCommand(command, row) {
+      switch (command) {
+        case "resetPwd":
+          this.handleResetPwd(row.userId);
+          break;
+        case "authRole":
+          this.handleUserRole(row.userId);
+          break;
+        default:
+          break;
+      }
+    },
   }
 }
 </script>

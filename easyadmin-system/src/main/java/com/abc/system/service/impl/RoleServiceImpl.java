@@ -3,6 +3,7 @@ package com.abc.system.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.extra.spring.SpringUtil;
+import com.abc.common.constant.CommonConstants;
 import com.abc.common.core.service.BaseServiceImpl;
 import com.abc.common.domain.vo.PageResult;
 import com.abc.common.exception.GlobalException;
@@ -140,5 +141,12 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, Role> implement
         AssertUtils.isTrue(CollUtil.isNotEmpty(roleIds), "角色ID列表不能为空");
 
         roleMapper.saveUserRole(userId, roleIds);
+    }
+
+    @Override
+    public Boolean isAdmin(Long userId) {
+        AssertUtils.isNotEmpty(userId, "用户ID不能为空");
+        return getRoleKeysByUserId(userId).stream()
+                .anyMatch(CommonConstants.SUPER_ADMIN::equals);
     }
 }

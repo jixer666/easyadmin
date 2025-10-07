@@ -44,3 +44,11 @@ export function saveUserRole(data) {
     data
   })
 }
+
+export function resetPassword(data) {
+  return request({
+    url: '/system/user/resetPassword',
+    method: 'put',
+    data
+  })
+}

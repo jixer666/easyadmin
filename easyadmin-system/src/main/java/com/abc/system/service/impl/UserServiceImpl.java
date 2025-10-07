@@ -6,8 +6,10 @@ import com.abc.common.core.service.BaseServiceImpl;
 import com.abc.common.domain.vo.PageResult;
 import com.abc.common.util.AssertUtils;
 import com.abc.common.domain.entity.User;
+import com.abc.common.util.SecurityUtils;
 import com.abc.system.convert.UserConvert;
 import com.abc.system.domain.dto.UserDTO;
+import com.abc.system.domain.dto.UserResetPwdDTO;
 import com.abc.system.domain.vo.UserRoleVO;
 import com.abc.system.domain.vo.UserVO;
 import com.abc.system.mapper.UserMapper;
@@ -15,6 +17,7 @@ import com.abc.system.service.RoleService;
 import com.abc.system.service.UserService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -96,5 +99,22 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
         AssertUtils.isNotEmpty(userId, "用户ID不能为空");
 
         roleService.deleteRoleByUserId(userId);
+    }
+
+    @Override
+    public void resetPassword(UserResetPwdDTO userResetPwdDTO) {
+        userResetPwdDTO.adminCheckParams();
+
+        User user = getUserById(userResetPwdDTO.getUserId());
+        AssertUtils.isNotEmpty(user, "用户不存在");
+
+        if (!roleService.isAdmin(SecurityUtils.getUserId())) {
+            userResetPwdDTO.commonCheckParams();
+            AssertUtils.isNotEmpty(user.getUserId().equals(SecurityUtils.getUserId()), "无权限");
+            AssertUtils.isTrue(SecurityUtils.matchesPassword(userResetPwdDTO.getOldPassword(), user.getPassword()), "旧密码错误");
+        }
+
+        user.setPassword(new BCryptPasswordEncoder().encode(userResetPwdDTO.getNewPassword()));
+        userMapper.updateById(user);
     }
 }

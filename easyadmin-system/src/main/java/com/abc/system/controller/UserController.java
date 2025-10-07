@@ -4,6 +4,7 @@ import com.abc.common.domain.vo.ApiResult;
 import com.abc.common.domain.vo.PageResult;
 import com.abc.common.util.SecurityUtils;
 import com.abc.system.domain.dto.UserDTO;
+import com.abc.system.domain.dto.UserResetPwdDTO;
 import com.abc.system.domain.vo.UserRoleVO;
 import com.abc.system.domain.vo.UserVO;
 import com.abc.system.service.UserService;
@@ -49,6 +50,14 @@ public class UserController {
     @PostMapping("/saveUserRole")
     public ApiResult<Void> saveUserRole(@RequestBody UserDTO userDTO) {
         userService.saveUserRole(userDTO);
+
+        return ApiResult.success();
+    }
+
+    @ApiOperation("重置用户密码")
+    @PutMapping("/resetPassword")
+    public ApiResult<Void> resetPassword(@RequestBody UserResetPwdDTO userResetPwdDTO) {
+        userService.resetPassword(userResetPwdDTO);
 
         return ApiResult.success();
     }
