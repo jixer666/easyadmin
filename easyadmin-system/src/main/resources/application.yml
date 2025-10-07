@@ -3,6 +3,7 @@ system:
   whitelist:
     - /system/login
     - /system/register
+    - /system/oss/download/**
 
 server:
   port: ${server.port}
@@ -127,6 +128,9 @@ oss:
     access-key-id: ${easyadmin.oss.aliyun.accessKey}
     access-key-secret: ${easyadmin.oss.aliyun.secretKey}
     bucket-name: ${easyadmin.oss.aliyun.bucketName}
+  local:
+    path: ${easyadmin.oss.local.path}
+
 url:
   front: ${easyadmin.url.front}
   backend: ${easyadmin.url.backend}

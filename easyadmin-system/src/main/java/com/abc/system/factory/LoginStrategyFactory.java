@@ -22,7 +22,7 @@ public class LoginStrategyFactory {
     @PostConstruct
     public void init(){
         applicationContext.getBeansOfType(AuthStrategy.class).forEach((k, v)->{
-            LOGIN_MAP.put(LoginTypeEnum.getTypeByLoginKey(k),v);
+            LOGIN_MAP.put(LoginTypeEnum.getTypeByLoginKey(k), v);
         });
     }
 
