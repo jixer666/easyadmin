@@ -13,6 +13,8 @@
 
 EasyAdmin 是一个基于 SpringBoot + Vue2 前后端分离的快速开发平台，致力于为开发者提供高效、规范、易扩展的后台管理系统解决方案。平台集成了丰富的功能组件和最佳实践，让开发者能够专注于业务逻辑，快速构建企业级应用。
 
+视频演示：https://www.bilibili.com/video/BV1JAxiz7E7G/?vd_source=20b2e12c281b549f17437a2e6b6cd3bd
+
 ### ✨ 核心特性
 
 - 权限控制
