@@ -24,6 +24,14 @@ public class FileVO {
 
     private String downloadUrl;
 
+    private String filePath;
+
+    private Integer ossType;
+
+    private Long userId;
+
     private Date createTime;
+
+    private Integer status;
 
 }

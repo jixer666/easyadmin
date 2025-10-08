@@ -23,27 +23,32 @@
     <div>
       <el-table v-loading="loading" :data="tableList" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="50" align="center" />
-        <el-table-column label="文件ID" align="center" key="fileId" prop="fileId" :show-overflow-tooltip="true" />
         <el-table-column label="文件名称" align="center" key="filename" prop="filename" :show-overflow-tooltip="true" />
-        <el-table-column label="文件大小" align="center" key="totalSize" prop="totalSize" :show-overflow-tooltip="true" />
+        <el-table-column label="文件大小" align="center" key="totalSize" prop="totalSize" :show-overflow-tooltip="true">
+          <template slot-scope="scope">
+            <span>{{ formatFileSize(scope.row.totalSize) }}</span>
+          </template>
+        </el-table-column>
         <el-table-column label="文件类型" align="center" key="fileType" prop="fileType" :show-overflow-tooltip="true" />
         <el-table-column label="文件MD5" align="center" key="fileMd5" prop="fileMd5" :show-overflow-tooltip="true" />
-        <el-table-column label="OSS类型" align="center" key="ossType" prop="ossType" :show-overflow-tooltip="true" />
+        <el-table-column label="OSS类型" align="center" key="ossType" prop="ossType" :show-overflow-tooltip="true" width="150">
+          <template slot-scope="scope">
+            <dict-tag :options="dict.type.system_oss_type" :value="scope.row.ossType"/>
+          </template>
+        </el-table-column>
         <el-table-column label="文件路径" align="center" key="filePath" prop="filePath" :show-overflow-tooltip="true" />
-        <el-table-column label="用户ID" align="center" key="userId" prop="userId" :show-overflow-tooltip="true" />
+        <el-table-column label="上传者ID" align="center" key="userId" prop="userId" :show-overflow-tooltip="true" />
         <el-table-column label="状态" align="center" key="status" width="100">
           <template slot-scope="scope">
             <dict-tag :options="dict.type.common_status" :value="scope.row.status"/>
           </template>
         </el-table-column>
-        <el-table-column label="创建时间" align="center" prop="createTime" width="160">
-        </el-table-column>
-        <el-table-column label="更新时间" align="center" prop="updateTime" width="160">
+        <el-table-column label="创建时间" align="center" prop="createTime" width="150">
         </el-table-column>
         <el-table-column
           label="操作"
           align="center"
-          width="250"
+          width="150"
         >
           <template slot-scope="scope">
             <el-button
@@ -79,22 +84,26 @@
           <el-input v-model="form.filename"></el-input>
         </el-form-item>
         <el-form-item label="文件大小" prop="totalSize">
-          <el-input v-model="form.totalSize"></el-input>
+          <el-input v-model="form.totalSize" disabled></el-input>
         </el-form-item>
         <el-form-item label="文件类型" prop="fileType">
-          <el-input v-model="form.fileType"></el-input>
+          <el-input v-model="form.fileType" disabled></el-input>
         </el-form-item>
         <el-form-item label="文件MD5" prop="fileMd5">
-          <el-input v-model="form.fileMd5"></el-input>
+          <el-input v-model="form.fileMd5" disabled></el-input>
         </el-form-item>
         <el-form-item label="OSS类型" prop="ossType">
-          <el-input v-model="form.ossType"></el-input>
+          <el-select v-model="form.ossType" placeholder="请选择OSS类型" disabled>
+            <el-option
+              v-for="item in dict.type.system_oss_type"
+              :key="item.value"
+              :label="item.label"
+              :value="parseInt(item.value)">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="文件路径" prop="filePath">
-          <el-input v-model="form.filePath"></el-input>
-        </el-form-item>
-        <el-form-item label="用户ID" prop="userId">
-          <el-input v-model="form.userId"></el-input>
+          <el-input v-model="form.filePath" disabled></el-input>
         </el-form-item>
         <el-form-item label="文件状态">
           <el-radio-group v-model="form.status">
@@ -112,10 +121,11 @@
 
 <script>
 import {getFilePage, addFile, updateFile, deleteFile} from '@/api/system/file'
+import {formatFileSize} from '@/utils/index';
 
 export default {
   name: 'File',
-  dicts: ['common_status'],
+  dicts: ['common_status', 'system_oss_type'],
   data() {
     return {
       searchForm: {
@@ -144,6 +154,7 @@ export default {
     this.getList();
   },
   methods: {
+    formatFileSize,
     getList() {
       this.loading = true;
       getFilePage(this.searchForm).then(res => {
