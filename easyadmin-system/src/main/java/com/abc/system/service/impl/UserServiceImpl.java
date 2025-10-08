@@ -16,6 +16,7 @@ import com.abc.system.mapper.UserMapper;
 import com.abc.system.service.RoleService;
 import com.abc.system.service.UserService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -115,6 +116,15 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
         }
 
         user.setPassword(new BCryptPasswordEncoder().encode(userResetPwdDTO.getNewPassword()));
+        userMapper.updateById(user);
+    }
+
+    @Override
+    public void updateUser(UserDTO userDTO) {
+        userDTO.checkUpdateUserParams();
+        User user = userMapper.selectById(userDTO.getUserId());
+        AssertUtils.isNotEmpty(user, "用户不存在");
+        BeanUtils.copyProperties(userDTO, user);
         userMapper.updateById(user);
     }
 }

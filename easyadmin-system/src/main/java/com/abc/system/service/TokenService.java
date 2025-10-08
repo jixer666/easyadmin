@@ -14,4 +14,6 @@ public interface TokenService {
     String getToken(HttpServletRequest request);
 
     LoginUserDTO getLoginUserDTO(String token);
+
+    void invalidToken(String token);
 }

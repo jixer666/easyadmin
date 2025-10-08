@@ -5,6 +5,7 @@ import cn.hutool.core.util.RandomUtil;
 import com.abc.common.constant.CacheConstants;
 import com.abc.common.constant.CommonConstants;
 import com.abc.common.exception.GlobalException;
+import com.abc.common.util.AssertUtils;
 import com.abc.common.util.RedisUtils;
 import com.abc.common.domain.dto.LoginUserDTO;
 import com.abc.common.util.StringUtils;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -68,7 +70,7 @@ public class TokenServiceImpl implements TokenService {
             loginUser.setLoginTime(System.currentTimeMillis());
         }
         loginUser.setExpireTime(System.currentTimeMillis() + tokenExpireTime * 60 * 1000);
-        RedisUtils.set(loginTokenCacheKey, loginUser);
+        RedisUtils.set(loginTokenCacheKey, loginUser,  tokenExpireTime, TimeUnit.MINUTES);
     }
 
     @Override
@@ -114,4 +116,17 @@ public class TokenServiceImpl implements TokenService {
 
     }
 
+    @Override
+    public void invalidToken(String token) {
+        AssertUtils.isNotEmpty(token, "token不能为空");
+
+        LoginUserDTO loginUser = getLoginUserDTO(token);
+        if (ObjectUtil.isNull(loginUser)) {
+            return;
+        }
+
+        String loginTokenCacheKey = CacheConstants.getFinalKey(CacheConstants.LOGIN_TOKEN_KEY, loginUser.getTokenKey());
+        RedisUtils.del(loginTokenCacheKey);
+
+    }
 }

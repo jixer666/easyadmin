@@ -3,6 +3,7 @@ package com.abc.system.controller;
 import com.abc.common.domain.vo.ApiResult;
 import com.abc.common.domain.vo.PageResult;
 import com.abc.common.util.SecurityUtils;
+import com.abc.system.domain.dto.RoleDTO;
 import com.abc.system.domain.dto.UserDTO;
 import com.abc.system.domain.dto.UserResetPwdDTO;
 import com.abc.system.domain.vo.UserRoleVO;
@@ -58,6 +59,14 @@ public class UserController {
     @PutMapping("/resetPassword")
     public ApiResult<Void> resetPassword(@RequestBody UserResetPwdDTO userResetPwdDTO) {
         userService.resetPassword(userResetPwdDTO);
+
+        return ApiResult.success();
+    }
+
+    @ApiOperation("更新用户")
+    @PutMapping
+    public ApiResult<Void> updateUser(@RequestBody UserDTO userDTO) {
+        userService.updateUser(userDTO);
 
         return ApiResult.success();
     }

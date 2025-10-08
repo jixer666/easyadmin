@@ -26,4 +26,6 @@ public interface UserService extends IService<User> {
     void saveUserRole(UserDTO userDTO);
 
     void resetPassword(UserResetPwdDTO userResetPwdDTO);
+
+    void updateUser(UserDTO userDTO);
 }

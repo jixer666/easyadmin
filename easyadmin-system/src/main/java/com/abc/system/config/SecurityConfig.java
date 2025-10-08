@@ -87,7 +87,7 @@ public class SecurityConfig {
                             .anyRequest().authenticated();
                 })
                 // 添加Logout filter
-                .logout(logout -> logout.logoutUrl("/logout").logoutSuccessHandler(logoutSuccessHandler))
+                .logout(logout -> logout.logoutUrl("/system/logout").logoutSuccessHandler(logoutSuccessHandler))
                 // 添加JWT filter
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 // 添加CORS filter

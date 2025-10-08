@@ -2,8 +2,11 @@
   <div class="user-container">
     <div>
       <el-form :inline="true" :model="searchForm" class="demo-form-inline">
-        <el-form-item label="用户名称">
-          <el-input v-model="searchForm.userName" placeholder="请输入用户名称"></el-input>
+        <el-form-item label="用户账号">
+          <el-input v-model="searchForm.username" placeholder="请输入用户账号"></el-input>
+        </el-form-item>
+        <el-form-item label="用户昵称">
+          <el-input v-model="searchForm.nickname" placeholder="请输入用户昵称"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="getList" size="medium">搜索</el-button>
@@ -85,7 +88,7 @@
           <el-input v-model="form.nickname"></el-input>
         </el-form-item>
         <el-form-item label="用户头像">
-          <el-input v-model="form.avatar"></el-input>
+          <file-upload v-model="form.avatar" :isDrag="true" :fileType="[]" class="update-div" :fileSize="5" ref="fileUploadRef" :limit="1" />
         </el-form-item>
         <el-form-item label="用户状态">
           <el-radio-group v-model="form.status">
@@ -140,10 +143,14 @@
 
 <script>
 import {getUserPage, addUser, updateUser, deleteUser, getUserRole, saveUserRole, resetPassword} from '@/api/system/user'
+import FileUpload from '@/components/FileUpload';
 
 export default {
   name: 'User',
   dicts: ['common_status'],
+  components: {
+    FileUpload
+  },
   data() {
     return {
       searchForm: {
@@ -193,6 +200,11 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           this.submitLoading = true;
+          const fileList = this.$refs.fileUploadRef.fileList
+          if (!fileList || fileList.length === 0) {
+            this.$message.warning("文件未上传");
+          }
+          this.form.avatar = fileList[0].url;
           if (this.form.userId != undefined) {
             updateUser(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
@@ -250,6 +262,14 @@ export default {
       this.dialogVisible = false;
       this.dialogUserRoleVisible = false;
       this.dialogResetPwdVisible = false;
+      const fileUploadRef = this.$refs.fileUploadRef;
+      if (fileUploadRef) {
+        fileUploadRef.fileList = [];
+        const elUploadRef = fileUploadRef.$refs.imageUpload;
+        if (elUploadRef && elUploadRef.clearFiles) {
+          elUploadRef.clearFiles();
+        }
+      }
     },
     handleSelectionChange(val) {
       this.multipleSelectionIds = val.map(item => item.userId);

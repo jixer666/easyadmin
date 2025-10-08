@@ -52,3 +52,20 @@ export function resetPassword(data) {
     data
   })
 }
+
+export function addUser(data) {
+  return request({
+    url: '/system/user',
+    method: 'post',
+    data
+  })
+}
+
+export function updateUser(data) {
+  return request({
+    url: `/system/user`,
+    method: 'put',
+    data
+  })
+}
+
