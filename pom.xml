@@ -11,6 +11,7 @@
     <modules>
         <module>easyadmin-system</module>
         <module>easyadmin-common</module>
+        <module>easyadmin-api</module>
     </modules>
 
     <properties>
