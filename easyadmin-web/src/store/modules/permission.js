@@ -1,20 +1,8 @@
 import router, { dynamicRoutes, constantRoutes } from '@/router'
-import {getRoutes} from "@/api/system/role";
+import {getRoutes, getWhiteRoutes} from '@/api/system/role'
 import Layout from '@/layout/index'
-
-/**
- * Use meta.role to determine if the current user has permission
- * @param roles
- * @param route
- */
-function hasPermission(roles, route) {
-  if (route.meta && route.meta.roles) {
-    return roles.some(role => route.meta.roles.includes(role))
-  } else {
-    return true
-  }
-}
-
+import store from '@/store'
+import auth from '@/utils/auth'
 
 // 遍历后台传来的路由字符串，转换为组件对象
 function filterAsyncRouter(asyncRouterMap, lastRouter = false, type = false) {
@@ -27,9 +15,11 @@ function filterAsyncRouter(asyncRouterMap, lastRouter = false, type = false) {
       if (route.component === 'Layout') {
         route.component = Layout
       } else if (route.component === 'ParentView') {
-        route.component = ParentView
+        // ParentView组件未找到，使用默认处理
+        route.component = Layout
       } else if (route.component === 'InnerLink') {
-        route.component = InnerLink
+        // InnerLink组件未找到，使用默认处理
+        route.component = Layout
       } else {
         route.component = loadView(route.component)
       }
@@ -74,6 +64,25 @@ export function filterDynamicRoutes(routes) {
   return res
 }
 
+function generateWhiteUrls(routes, whitelistPaths = []) {
+  routes.forEach(route => {
+    // 将其路径添加到白名单
+    if (route.front && route.path) {
+      // 确保路径以/开头
+      const fullPath = route.path.startsWith('/') ? route.path : '/' + route.path
+      whitelistPaths.push(fullPath)
+
+      store.dispatch('settings/setWhiteList', fullPath)
+    }
+
+    // 递归处理子路由
+    if (route.children && route.children.length) {
+      generateWhiteUrls(route.children, whitelistPaths)
+    }
+  })
+
+  return whitelistPaths
+}
 
 const state = {
   routes: [],
@@ -95,8 +104,18 @@ const mutations = {
     state.topbarRouters = routes
   },
   SET_SIDEBAR_ROUTERS: (state, routes) => {
-    state.sidebarRouters = routes
-  },
+    const filterFrontRouters = routes.filter(route => {
+      if (route.front) {
+        return false
+      }
+      if (route.children && route.children.length > 0) {
+        route.children = route.children.filter(child => child.menType !== 4)
+      }
+      return true
+    })
+    console.log(filterFrontRouters)
+    state.sidebarRouters = filterFrontRouters;
+  }
 }
 
 const actions = {
@@ -118,6 +137,21 @@ const actions = {
       })
     })
   },
+  generateWhiteRoutes({ commit }, baseWhiteList) {
+    return new Promise(resolve => {
+      getWhiteRoutes().then(res => {
+        const rdata = JSON.parse(JSON.stringify(res.data))
+        const rewriteRoutes = filterAsyncRouter(rdata, false, true)
+        const asyncRoutes = filterDynamicRoutes(dynamicRoutes)
+        rewriteRoutes.push({path: '*', redirect: '/404', hidden: true})
+        commit('SET_ROUTES', rewriteRoutes)
+        router.addRoutes(asyncRoutes)
+
+        generateWhiteUrls([...baseWhiteList, ...res.data])
+        resolve(rewriteRoutes)
+      })
+    })
+  }
 }
 
 export const loadView = (view) => {
@@ -128,7 +162,6 @@ export const loadView = (view) => {
     return () => import(`@/views/${view}`)
   }
 }
-
 
 export default {
   namespaced: true,

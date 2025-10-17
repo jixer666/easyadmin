@@ -5,6 +5,12 @@
         <el-form-item label="菜单名称">
           <el-input v-model="form.menuName" placeholder="请输入菜单名称"></el-input>
         </el-form-item>
+        <el-form-item label="菜单路径">
+          <el-radio-group v-model="form.front" size="medium">
+            <el-radio-button :label="true">前台路径</el-radio-button>
+            <el-radio-button :label="false">后台路径</el-radio-button>
+          </el-radio-group>
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="getList" size="medium">搜索</el-button>
           <el-button @click="form = {}" size="medium">重置</el-button>
@@ -84,6 +90,7 @@
             <el-radio :label="1">目录</el-radio>
             <el-radio :label="2">菜单</el-radio>
             <el-radio :label="3">按钮</el-radio>
+            <el-radio :label="4">前台</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-row>
@@ -180,6 +187,7 @@ export default {
         pageNum: 1,
         pageSize: 1000,
         total: 0,
+        front: false,
       },
       tableList: [],
       loading: false,

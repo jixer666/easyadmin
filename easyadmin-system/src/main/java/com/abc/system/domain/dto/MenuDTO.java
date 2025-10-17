@@ -32,6 +32,8 @@ public class MenuDTO {
     // 用于删除菜单
     private List<Long> menuIds;
 
+    private Boolean front;
+
     public void checkUpdateParams() {
         AssertUtils.isNotEmpty(this, "菜单参数不能为空");
         AssertUtils.isNotEmpty(menuId, "菜单ID不能为空");

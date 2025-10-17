@@ -4,6 +4,7 @@ system:
     - /system/login
     - /system/register
     - /system/oss/download/**
+    - /system/white/routes
 
 server:
   port: ${server.port}

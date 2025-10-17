@@ -46,5 +46,22 @@
         <include refid="selectMenuVo"/>
         where parent_id = #{menuId}
     </select>
+    <select id="selectMenusByMenuType" resultMap="MenuResult">
+        <include refid="selectMenuVo"/>
+        where menu_type = #{menuType}
+    </select>
+    <select id="selectMenusByMenuDTO"  resultMap="MenuResult">
+        select m.* from tb_menu m
+        left join tb_role_menu rm on rm.menu_id = m.menu_id
+        left join tb_role r on r.role_id = rm.role_id
+        left join tb_user_role ur on ur.role_id = r.role_id
+        <where>
+            <if test="menuName != null">m.menu_name like concat('%', #{menuName}, '%')</if>
+            <if test="front != null">
+                <if test="front">m.menu_type = 4</if>
+                <if test="!front">m.menu_type != 4</if>
+            </if>
+        </where>
+    </select>
 
 </mapper>

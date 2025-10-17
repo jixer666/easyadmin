@@ -23,4 +23,6 @@ public class MenuRouterVO {
 
     public MenuRouterMetaVo meta;
 
+    private Boolean front;
+
 }

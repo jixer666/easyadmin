@@ -12,4 +12,6 @@ public interface IndexService {
     void register(RegisterDTO registerDTO);
 
     List<MenuRouterVO> getMenuRoutes();
+
+    List<MenuRouterVO> getMenuWhiteRoutes();
 }

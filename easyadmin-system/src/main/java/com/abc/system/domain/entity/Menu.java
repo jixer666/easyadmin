@@ -50,4 +50,8 @@ public class Menu extends BaseEntity {
     public boolean isAnNiu() {
         return menuType.equals(MenuTypeEnum.AN_NIU.getType());
     }
+
+    public Boolean isFront() {
+        return menuType.equals(MenuTypeEnum.FRONT.getType());
+    }
 }

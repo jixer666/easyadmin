@@ -25,7 +25,8 @@ public class MenuConvert {
         menuRouterVO.setPath(getMenuRouterPath(menu));
         menuRouterVO.setComponent(getMenuRouterComponent(menu));
         menuRouterVO.setMeta(buildMetaVo(menu));
-        menuRouterVO.setHidden(false);
+        menuRouterVO.setHidden(menu.getHidden().equals(CommonConstants.NO));
+        menuRouterVO.setFront(menu.isFront());
         if (CollectionUtils.isNotEmpty(children) && menu.isMuLu()) {
             menuRouterVO.setAlwaysShow(true);
             menuRouterVO.setRedirect(MenuConstants.NO_REDIRECT);
@@ -35,7 +36,7 @@ public class MenuConvert {
     }
 
     private static String getMenuRouterPath(Menu menu) {
-        if (menu.isMuLu()) {
+        if (menu.isMuLu() || menu.isFront()) {
             return "/" + menu.getPath();
         }
         return menu.getPath();

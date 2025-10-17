@@ -7,6 +7,13 @@ export function getRoutes() {
   })
 }
 
+export function getWhiteRoutes() {
+  return request({
+    url: '/system/white/routes',
+    method: 'get'
+  })
+}
+
 export function getRolePage(data) {
   return request({
     url: '/system/role/page',

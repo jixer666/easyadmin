@@ -1,6 +1,5 @@
 package com.abc.system.service.impl;
 
-import com.abc.common.constant.CommonConstants;
 import com.abc.common.constant.MenuConstants;
 import com.abc.common.util.SecurityUtils;
 import com.abc.system.convert.MenuConvert;
@@ -8,6 +7,7 @@ import com.abc.system.domain.dto.LoginDTO;
 import com.abc.common.domain.dto.LoginUserDTO;
 import com.abc.system.domain.dto.RegisterDTO;
 import com.abc.system.domain.entity.Menu;
+import com.abc.system.domain.enums.MenuTypeEnum;
 import com.abc.system.domain.vo.MenuRouterVO;
 import com.abc.system.factory.LoginStrategyFactory;
 import com.abc.system.service.IndexService;
@@ -69,5 +69,12 @@ public class IndexServiceImpl implements IndexService {
         }
 
         return routers;
+    }
+
+    @Override
+    public List<MenuRouterVO> getMenuWhiteRoutes() {
+        List<Menu> menus = menuService.getMenusByMenuType(MenuTypeEnum.FRONT.getType());
+
+        return buildMenuRouter(MenuConstants.DEFAULT_MENU_PARENT_ID, menus);
     }
 }

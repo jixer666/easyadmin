@@ -43,4 +43,12 @@ public class IndexController {
         return ApiResult.success(routers);
     }
 
+    @ApiOperation("获取白名单菜单权限")
+    @GetMapping("/white/routes")
+    public ApiResult<List<MenuRouterVO>> getMenuWhiteRoutes() {
+        List<MenuRouterVO> routers = indexService.getMenuWhiteRoutes();
+
+        return ApiResult.success(routers);
+    }
+
 }

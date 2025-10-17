@@ -37,7 +37,7 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, Menu> implement
     @Override
     public PageResult getMenuPageWithUiParam(MenuDTO menuDTO) {
         startPage();
-        List<Menu> menus = getMenusByUserId(null);
+        List<Menu> menus = menuMapper.selectMenusByMenuDTO(menuDTO);
         List<MenuVO> menuVOList = pageList2CustomList(menus,
                 (List<Menu> list) -> buildMenuVO(MenuConstants.DEFAULT_MENU_PARENT_ID, menus)
         );
@@ -118,5 +118,12 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, Menu> implement
         AssertUtils.isNotEmpty(menuId, "菜单ID列表不能为空");
 
         return menuMapper.selectMenusByParentId(menuId);
+    }
+
+    @Override
+    public List<Menu> getMenusByMenuType(Integer type) {
+        AssertUtils.isNotEmpty(type, "菜单类型不能为空");
+
+        return menuMapper.selectMenusByMenuType(type);
     }
 }
