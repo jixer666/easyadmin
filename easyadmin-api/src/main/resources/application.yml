@@ -5,6 +5,8 @@ system:
     - /system/register
     - /system/oss/download/**
     - /system/white/routes
+    - /system/captcha
+    - /system/sendRegisterEmail
 
 server:
   port: ${server.port}
