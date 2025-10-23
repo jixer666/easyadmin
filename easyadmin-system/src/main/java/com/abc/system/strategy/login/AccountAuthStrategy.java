@@ -42,15 +42,17 @@ public class AccountAuthStrategy implements AuthStrategy {
     }
 
     @Override
-    public void doRegister(RegisterDTO registerDTO) {
+    public User doRegister(RegisterDTO registerDTO) {
         preRegisterCheck(registerDTO);
         User user = UserConvert.convertToUserByRegisterDTO(registerDTO);
         userService.saveUser(user);
         afterRegister(registerDTO);
+
+        return user;
     }
 
     public void preRegisterCheck(RegisterDTO registerDTO) {
-        registerDTO.checkParams();
+        registerDTO.checkAccountParams();
         User user = userService.getUserByUsername(registerDTO.getUsername());
         AssertUtils.isEmpty(user, "用户已存在");
 

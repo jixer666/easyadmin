@@ -11,14 +11,18 @@ import com.abc.common.util.SecurityUtils;
 import com.abc.system.convert.CaptchaConvert;
 import com.abc.system.convert.MenuConvert;
 import com.abc.system.domain.dto.CaptchaDTO;
+import com.abc.system.domain.dto.EmailDTO;
 import com.abc.system.domain.dto.LoginDTO;
 import com.abc.common.domain.dto.LoginUserDTO;
 import com.abc.system.domain.dto.RegisterDTO;
 import com.abc.system.domain.entity.Menu;
+import com.abc.system.domain.enums.EmailTypeEnum;
 import com.abc.system.domain.enums.MenuTypeEnum;
 import com.abc.system.domain.vo.CaptchaVO;
+import com.abc.system.domain.vo.EmailVO;
 import com.abc.system.domain.vo.MenuRouterVO;
 import com.abc.system.factory.LoginStrategyFactory;
+import com.abc.system.service.EmailService;
 import com.abc.system.service.IndexService;
 import com.abc.system.service.MenuService;
 import com.abc.system.service.TokenService;
@@ -55,6 +59,9 @@ public class IndexServiceImpl implements IndexService {
 
     @Resource(name = "captchaProducerMath")
     private Producer captchaProducerMath;
+
+    @Autowired
+    private EmailService emailService;
 
     @Override
     public String login(LoginDTO loginDTO) {
@@ -164,5 +171,25 @@ public class IndexServiceImpl implements IndexService {
         AssertUtils.isNotEmpty(uuid, "图像验证码uuid不能为空");
         String captchaCacheKey = CacheConstants.getFinalKey(CacheConstants.CAPTCHA_UUID, uuid);
         RedisUtils.del(captchaCacheKey);
+    }
+
+    @Override
+    public Boolean checkEmailCode(String emailUuid, String emailCode) {
+        AssertUtils.isNotEmpty(emailUuid, "邮箱验证码uuid不能为空");
+        AssertUtils.isNotEmpty(emailCode, "邮箱验证码不能为空");
+
+        String emailCacheKey = CacheConstants.getFinalKey(CacheConstants.EMAIL_UUID, emailUuid);
+        String trueCode = RedisUtils.get(emailCacheKey);
+        AssertUtils.isNotEmpty(trueCode, "邮箱验证码已失效");
+
+        return trueCode.equalsIgnoreCase(emailCode);
+    }
+
+    @Override
+    public EmailVO sendRegisterEmail(EmailDTO emailDTO) {
+        AssertUtils.isNotEmpty(emailDTO.getEmail(), "邮箱不能为空");
+        emailDTO.setEmailType(EmailTypeEnum.REGISTER.getType());
+
+        return emailService.sendEmail(emailDTO);
     }
 }
