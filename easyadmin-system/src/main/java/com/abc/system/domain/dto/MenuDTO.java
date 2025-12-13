@@ -2,6 +2,7 @@ package com.abc.system.domain.dto;
 
 import cn.hutool.core.collection.CollUtil;
 import com.abc.common.util.AssertUtils;
+import com.abc.system.domain.enums.MenuTypeEnum;
 import lombok.Data;
 
 import java.util.List;
@@ -29,6 +30,8 @@ public class MenuDTO {
 
     private Integer status;
 
+    private String perms;
+
     // 用于删除菜单
     private List<Long> menuIds;
 
@@ -42,7 +45,9 @@ public class MenuDTO {
     public void checkSaveParams() {
         AssertUtils.isNotEmpty(this, "菜单参数不能为空");
         AssertUtils.isNotEmpty(menuName, "菜单名称不能为空");
-        AssertUtils.isNotEmpty(path, "路由路径不能为空");
+        if (!MenuTypeEnum.AN_NIU.getType().equals(menuType)) {
+            AssertUtils.isNotEmpty(path, "路由路径不能为空");
+        }
         AssertUtils.isNotEmpty(menuType, "菜单类型不能为空");
         AssertUtils.isNotEmpty(orderNum, "顺序不能为空");
     }

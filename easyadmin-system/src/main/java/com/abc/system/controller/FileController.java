@@ -1,5 +1,6 @@
 package com.abc.system.controller;
 
+import com.abc.common.annotation.Permission;
 import com.abc.common.domain.vo.ApiResult;
 import com.abc.common.domain.vo.PageResult;
 import com.abc.system.domain.dto.FileDTO;
@@ -23,6 +24,7 @@ public class FileController {
     @Autowired
     private FileService fileService;
 
+    @Permission("system:file:list")
     @ApiOperation("查询文件分页")
     @GetMapping("/page")
     public ApiResult<PageResult> getFilePage(FileDTO fileDTO) {
@@ -31,6 +33,7 @@ public class FileController {
         return ApiResult.success(filePages);
     }
 
+    @Permission("system:file:edit")
     @ApiOperation("更新文件")
     @PutMapping
     public ApiResult<Void> updateFile(@RequestBody FileDTO fileDTO) {
@@ -39,6 +42,7 @@ public class FileController {
         return ApiResult.success();
     }
 
+    @Permission("system:file:add")
     @ApiOperation("新增文件")
     @PostMapping
     public ApiResult<Void> saveFile(@RequestBody FileDTO fileDTO) {
@@ -47,6 +51,7 @@ public class FileController {
         return ApiResult.success();
     }
 
+    @Permission("system:file:delete")
     @ApiOperation("删除文件")
     @DeleteMapping
     public ApiResult<Void> deleteFile(@RequestBody FileDTO fileDTO) {

@@ -1,5 +1,6 @@
 package com.abc.system.controller;
 
+import com.abc.common.annotation.Permission;
 import com.abc.common.domain.vo.ApiResult;
 import com.abc.common.domain.vo.PageResult;
 import com.abc.system.domain.dto.DictDTO;
@@ -17,6 +18,7 @@ public class DictController {
     @Autowired
     private DictService dictService;
 
+    @Permission("system:dict:list")
     @ApiOperation("查询字典分页")
     @GetMapping("/page")
     public ApiResult<PageResult> getDictPage(DictDTO dictDTO) {
@@ -25,6 +27,7 @@ public class DictController {
         return ApiResult.success(dictPages);
     }
 
+    @Permission("system:dict:edit")
     @ApiOperation("更新字典")
     @PutMapping
     public ApiResult<Void> updateDict(@RequestBody DictDTO dictDTO) {
@@ -33,6 +36,7 @@ public class DictController {
         return ApiResult.success();
     }
 
+    @Permission("system:dict:add")
     @ApiOperation("新增字典")
     @PostMapping
     public ApiResult<Void> saveDict(@RequestBody DictDTO dictDTO) {
@@ -41,6 +45,7 @@ public class DictController {
         return ApiResult.success();
     }
 
+    @Permission("system:dict:delete")
     @ApiOperation("删除字典")
     @DeleteMapping
     public ApiResult<Void> deleteDict(@RequestBody DictDTO dictDTO) {

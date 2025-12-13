@@ -32,4 +32,6 @@ public class MenuVO {
 
     private List<MenuVO> children;
 
+    private String perms;
+
 }

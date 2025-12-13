@@ -1,5 +1,6 @@
 package com.abc.system.controller;
 
+import com.abc.common.annotation.Permission;
 import com.abc.common.domain.vo.ApiResult;
 import com.abc.common.domain.vo.PageResult;
 import com.abc.common.util.SecurityUtils;
@@ -22,7 +23,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-
+    @Permission(value = "system:user:query")
     @ApiOperation("查询用户信息")
     @GetMapping("/info")
     public ApiResult<UserVO> getUserInfo() {
@@ -31,6 +32,7 @@ public class UserController {
         return ApiResult.success(userVO);
     }
 
+    @Permission(value = "system:user:list")
     @ApiOperation("查询用户分页")
     @GetMapping("/page")
     public ApiResult<PageResult> getUserPage(UserDTO userDTO) {
@@ -39,6 +41,7 @@ public class UserController {
         return ApiResult.success(pageResult);
     }
 
+    @Permission(value = "system:user:query")
     @ApiOperation("查询用户角色")
     @GetMapping("/getUserRole/{userId}")
     public ApiResult<UserRoleVO> getUserRole(@PathVariable Long userId) {
@@ -47,6 +50,7 @@ public class UserController {
         return ApiResult.success(userRole);
     }
 
+    @Permission(value = "system:user:add")
     @ApiOperation("分配用户角色")
     @PostMapping("/saveUserRole")
     public ApiResult<Void> saveUserRole(@RequestBody UserDTO userDTO) {
@@ -55,6 +59,7 @@ public class UserController {
         return ApiResult.success();
     }
 
+    @Permission(value = "system:user:edit")
     @ApiOperation("重置用户密码")
     @PutMapping("/resetPassword")
     public ApiResult<Void> resetPassword(@RequestBody UserResetPwdDTO userResetPwdDTO) {
@@ -63,6 +68,7 @@ public class UserController {
         return ApiResult.success();
     }
 
+    @Permission(value = "system:user:edit")
     @ApiOperation("更新用户")
     @PutMapping
     public ApiResult<Void> updateUser(@RequestBody UserDTO userDTO) {

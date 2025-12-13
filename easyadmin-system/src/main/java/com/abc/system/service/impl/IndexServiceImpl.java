@@ -94,7 +94,7 @@ public class IndexServiceImpl implements IndexService {
         }).collect(Collectors.toList());
 
         for (Menu menu : filterMenus) {
-            if (menu.getParentId().equals(menuId)) {
+            if (!menu.isAnNiu() && menu.getParentId().equals(menuId)) {
                 List<MenuRouterVO> children = buildMenuRouter(menu.getMenuId(), menus);
                 routers.add(MenuConvert.convertToMenuRouterVO(menu, children));
             }

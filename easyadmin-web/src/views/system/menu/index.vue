@@ -107,12 +107,12 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="路由路径">
+            <el-form-item label="路由路径" v-if="menuForm.menuType === 1 || menuForm.menuType === 2">
               <el-input v-model="menuForm.path"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="组件路径">
+            <el-form-item label="组件路径"  v-if="menuForm.menuType === 2">
               <el-input v-model="menuForm.component"></el-input>
             </el-form-item>
           </el-col>
@@ -140,7 +140,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="权限字符">
+            <el-form-item label="权限字符" v-if="menuForm.menuType === 2 || menuForm.menuType === 3">
               <el-input v-model="menuForm.perms"></el-input>
             </el-form-item>
           </el-col>
@@ -217,8 +217,14 @@ export default {
       })
     },
     handleClose() {
-      this.menuForm = {};
+      this.menuForm = {
+        icon: ''
+      };
       this.dialogVisible = false;
+      // 重置表单验证
+      if (this.$refs.menuForm) {
+        this.$refs.menuForm.resetFields();
+      }
     },
     handleAdd(item) {
       this.dialogTitle = "新增菜单";
@@ -239,6 +245,12 @@ export default {
               this.$modal.msgSuccess("修改成功");
               this.submitLoading = false;
               this.dialogVisible = false;
+              this.menuForm = {
+                icon: ''
+              };
+              if (this.$refs.menuForm) {
+                this.$refs.menuForm.resetFields();
+              }
               this.getList();
             }).catch(error => {
               this.submitLoading = false;
@@ -248,6 +260,12 @@ export default {
               this.$modal.msgSuccess("新增成功");
               this.submitLoading = false;
               this.dialogVisible = false;
+              this.menuForm = {
+                icon: ''
+              };
+              if (this.$refs.menuForm) {
+                this.$refs.menuForm.resetFields();
+              }
               this.getList();
             }).catch(error => {
               this.submitLoading = false;

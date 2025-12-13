@@ -240,8 +240,8 @@ import {
   deleteGenerateTable,
   getGenerateTableDbPage, importGenerateTable, previewGenerateTable, downloadGenerateTableCode, getGenerateTableInfo
 } from '@/api/system/generateTable';
-import hljs from "highlight.js/lib/highlight";
-import "highlight.js/styles/github-gist.css";
+import hljs from 'highlight.js/lib/core'
+import 'highlight.js/styles/github.css'
 import clipboard from '@/directive/clipboard/index.js';
 hljs.registerLanguage("java", require("highlight.js/lib/languages/java"));
 hljs.registerLanguage("xml", require("highlight.js/lib/languages/xml"));

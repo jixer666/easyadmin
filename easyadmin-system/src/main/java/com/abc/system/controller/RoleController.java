@@ -1,5 +1,6 @@
 package com.abc.system.controller;
 
+import com.abc.common.annotation.Permission;
 import com.abc.common.domain.vo.ApiResult;
 import com.abc.common.domain.vo.PageResult;
 import com.abc.system.domain.dto.RoleDTO;
@@ -18,6 +19,7 @@ public class RoleController {
     @Autowired
     private RoleService roleService;
 
+    @Permission("system:role:list")
     @ApiOperation("查询角色分页")
     @GetMapping("/page")
     public ApiResult<PageResult> getRolePage(RoleDTO roleDTO) {
@@ -26,6 +28,7 @@ public class RoleController {
         return ApiResult.success(rolePages);
     }
 
+    @Permission("system:role:edit")
     @ApiOperation("更新角色")
     @PutMapping
     public ApiResult<Void> updateRole(@RequestBody RoleDTO roleDTO) {
@@ -34,6 +37,7 @@ public class RoleController {
         return ApiResult.success();
     }
 
+    @Permission("system:role:add")
     @ApiOperation("新增角色")
     @PostMapping
     public ApiResult<Void> saveRole(@RequestBody RoleDTO roleDTO) {
@@ -42,6 +46,7 @@ public class RoleController {
         return ApiResult.success();
     }
 
+    @Permission("system:role:list")
     @ApiOperation("获取角色树型菜单权限")
     @GetMapping("/getRoleMenuTree/{roleId}")
     public ApiResult<RoleMenuTreeVO> getRoleMenuTree(@PathVariable Long roleId) {
@@ -50,6 +55,7 @@ public class RoleController {
         return ApiResult.success(roleMenuTreeVO);
     }
 
+    @Permission("system:role:add")
     @ApiOperation("分配菜单权限")
     @PostMapping("/saveRoleMenu")
     public ApiResult<Void> saveRoleMenu(@RequestBody RoleDTO roleDTO) {
@@ -58,6 +64,7 @@ public class RoleController {
         return ApiResult.success();
     }
 
+    @Permission("system:role:delete")
     @ApiOperation("删除角色")
     @DeleteMapping
     public ApiResult<Void> deleteRole(@RequestBody RoleDTO roleDTO) {

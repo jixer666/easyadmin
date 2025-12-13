@@ -4,6 +4,7 @@ import com.abc.system.domain.dto.MenuDTO;
 import com.abc.system.domain.entity.Menu;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 

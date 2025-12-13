@@ -43,6 +43,11 @@ public class LoginUserDTO implements UserDetails {
      */
     private Set<String> permissions;
 
+    /**
+     * 角色列表
+     */
+    private Set<String> roles;
+
     private String loginLocation;
 
     private String browser;
@@ -106,9 +111,10 @@ public class LoginUserDTO implements UserDetails {
     }
 
 
-    public LoginUserDTO(User user, Set<String> permissions) {
+    public LoginUserDTO(User user, Set<String> permissions, Set<String> roles) {
         this.userId = user.getUserId();
         this.user = user;
         this.permissions = permissions;
+        this.roles = roles;
     }
 }
