@@ -33,6 +33,7 @@ public class AccountAuthStrategy implements AuthStrategy {
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword());
         SecurityAuthContext.setContext(authToken);
         Authentication authentication = authenticationManager.authenticate(authToken);
+        SecurityAuthContext.removeContext();
 
         return (LoginUserDTO) authentication.getPrincipal();
     }

@@ -14,4 +14,7 @@ public class SecurityAuthContext {
         CONTEXT.set(authentication);
     }
 
+    public static void removeContext() {
+        CONTEXT.remove();
+    }
 }
