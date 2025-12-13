@@ -13,7 +13,7 @@ import lombok.Data;
 public class ${ClassName}VO {
 
     #foreach ($column in $columns)
-        private $column.javaType $column.javaField;
+    private $column.javaType $column.javaField;
 
     #end
 

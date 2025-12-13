@@ -17,7 +17,7 @@ import java.util.List;
 public class ${ClassName}DTO {
 
     #foreach ($column in $columns)
-        private $column.javaType $column.javaField;
+    private $column.javaType $column.javaField;
 
     #end
 
