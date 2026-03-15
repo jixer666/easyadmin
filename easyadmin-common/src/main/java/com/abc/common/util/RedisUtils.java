@@ -267,11 +267,11 @@ public class RedisUtils {
     }
 
     static <T> T toBeanOrNull(String json, Class<T> tClass) {
-        return json == null ? null : JsonUtils.toObj(json, tClass);
+        return json == null ? null : JSONUtil.toBean(json, tClass);
     }
 
     public static String objToStr(Object o) {
-        return JsonUtils.toStr(o);
+        return JSONUtil.toJsonStr(o);
     }
 
     public static <T> void mset(Map<String, T> map, long time) {
